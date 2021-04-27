@@ -23,30 +23,38 @@ public class VarDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException {
         if (tokens.isEmpty()) {
-
+            
         }
         Token first = tokens.pop();
         Token second = tokens.pop();
 
         if (first.thisLexameIs(VAR)) {
             if (!second.thisLexameIs(OPEN_KEY)) {
+                throw new SyntaxErrorException(second.getLexame(), OPEN_KEY);
             }
             typedVariableChecker(tokens);
         } else if (first.thisLexameIs(CONST)) {
             if (!second.thisLexameIs(OPEN_KEY)) {
-            }
+                throw new SyntaxErrorException(second.getLexame(), OPEN_KEY);
+            }            
         } else {
-
+            throw new SyntaxErrorException(first.getLexame(), VAR, CONST);
         }
     }
 
     public static void typedVariableChecker(Deque<Token> tokens) throws SyntaxErrorException {
         Token token = tokens.pop();
-        typeChecker(token);
-        variableChecker(tokens);
-        token = tokens.pop();
         if (!token.thisLexameIs(";")) {
-            throw new SyntaxErrorException(token.getLexame(), ";");
+
+            typeChecker(token);
+            variableChecker(tokens);
+
+            token = tokens.peek();
+            if (!token.thisLexameIs(";")) {
+                throw new SyntaxErrorException(token.getLexame(), ";");
+            }
+
+            typedVariableChecker(tokens);
         }
     }
 
