@@ -4,88 +4,89 @@ import java.util.Deque;
 import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
+import syntax.analyzer.util.Terminals;
+import static syntax.analyzer.util.Terminals.*;
 
 /**
  *
  * @author Antonio Neto e Uellington Damasceno
  */
 public class VarDeclaration {
-
-    private static final String VAR = "var";
-    private static final String OPEN_KEY = "{";
-    private static final String CLOSE_KEY = "}";
-    private static final String CONST = "const";
-    private static final String BOOLEAN = "boolean";
-    private static final String STRING = "string";
-    private static final String INT = "int";
-    private static final String REAL = "real";
-    private static final String IDENTIFIER = "identifier";
-
+    
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException {
         if (tokens.isEmpty()) {
-            
+            //se tiver vazio
         }
         Token first = tokens.pop();
         Token second = tokens.pop();
-
-        if (first.thisLexameIs(VAR)) {
-            if (!second.thisLexameIs(OPEN_KEY)) {
+        
+        if (first.thisLexameIs(VAR.getVALUE())) {
+            if (!second.thisLexameIs(OPEN_KEY.getVALUE())) {
                 throw new SyntaxErrorException(second.getLexame(), OPEN_KEY);
             }
             typedVariableChecker(tokens);
-        } else if (first.thisLexameIs(CONST)) {
-            if (!second.thisLexameIs(OPEN_KEY)) {
+        } else if (first.thisLexameIs(CONST.getVALUE())) {
+            if (!second.thisLexameIs(OPEN_KEY.getVALUE())) {
                 throw new SyntaxErrorException(second.getLexame(), OPEN_KEY);
-            }            
+            }
         } else {
             throw new SyntaxErrorException(first.getLexame(), VAR, CONST);
         }
     }
-
+    
     public static void typedVariableChecker(Deque<Token> tokens) throws SyntaxErrorException {
         Token token = tokens.pop();
-        if (!token.thisLexameIs(";")) {
-
-            typeChecker(token);
+        if (!token.thisLexameIs(SEMICOLON.getVALUE())) {
+            
+            typeChecker(tokens);
             variableChecker(tokens);
-
+            
             token = tokens.peek();
-            if (!token.thisLexameIs(";")) {
-                throw new SyntaxErrorException(token.getLexame(), ";");
+            if (!token.thisLexameIs(SEMICOLON.getVALUE())) {
+                throw new SyntaxErrorException(token.getLexame(), SEMICOLON);
             }
-
+            
             typedVariableChecker(tokens);
         }
     }
-
+    
     public static void variableChecker(Deque<Token> tokens) throws SyntaxErrorException {
         variableDeclaratorChecker(tokens);
     }
 
+    //consumir token para dar certo
     public static void variableDeclaratorChecker(Deque<Token> tokens) throws SyntaxErrorException {
         if (tokens.isEmpty()) {
+            //se tiver vazio
         }
         Token token = tokens.pop();
-        Token temp = tokens.peek();
-
+        Token nextToken = tokens.peek();
+        
         if (token.getType() != TokenType.IDENTIFIER) {
-            throw new SyntaxErrorException(token.getLexame(), IDENTIFIER);
+            tokens.push(token);
+            throw new SyntaxErrorException(token.getLexame(), Terminals.IDENTIFIER);
         } else {
-            if (temp.thisLexameIs("[")) {
-
-            } else if (temp.thisLexameIs("=")) {
-
+            if (nextToken.thisLexameIs(OPEN_BRACKET.getVALUE())) {
+                
+            } else if (nextToken.thisLexameIs(EQUALS.getVALUE())) {
+                
             }
         }
     }
-
+    
     public static void typeChecker(Token token) throws SyntaxErrorException {
-        if (!token.thisLexameIs(BOOLEAN) || !token.thisLexameIs(STRING) || !scalarChecker(token)) {
-            throw new SyntaxErrorException(token.getLexame(), BOOLEAN, STRING, INT, REAL);
+        if (!token.thisLexameIs(BOOLEAN.getVALUE()) || !token.thisLexameIs(Terminals.STRING.getVALUE()) || !scalarChecker(token)) {
+            throw new SyntaxErrorException(token.getLexame(), BOOLEAN, Terminals.STRING, INT, REAL);
         }
     }
 
+    public static void typeChecker(Deque<Token> tokens) throws SyntaxErrorException {
+        Token token = tokens.peek();        
+        typeChecker(token);
+        tokens.pop();
+    }
+    
     public static boolean scalarChecker(Token token) {
-        return token.thisLexameIs(REAL) || token.thisLexameIs(INT);
+        return token.thisLexameIs(REAL.getVALUE()) || token.thisLexameIs(INT.getVALUE());
     }
 }
