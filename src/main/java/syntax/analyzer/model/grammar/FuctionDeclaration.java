@@ -6,6 +6,7 @@ import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
+import syntax.analyzer.util.TerminalsUtil;
 
 /**
  *
@@ -17,13 +18,10 @@ public class FuctionDeclaration {
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException {
         typedIdentifier(tokens);
 
-        Token token = tokens.pop();
-        if (!token.thisLexameIs(OPEN_PARENTHESES.getVALUE())) {
-            tokens.push(token);
-            throw new SyntaxErrorException(token.getLexame(), Terminals.IDENTIFIER);
-        }
+        TerminalsUtil.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
 
-        token = tokens.peek();
+        Token token = tokens.peek();
+
         if (!token.thisLexameIs(CLOSE_PARENTHESES.getVALUE())) {
             try {
                 if (token.getType() == TokenType.IDENTIFIER) {
@@ -39,6 +37,7 @@ public class FuctionDeclaration {
         }
     }
 
+    //todo melhorar
     public static void paramsChecker(Deque<Token> tokens) throws SyntaxErrorException {
         typedIdentifier(tokens);
         if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
@@ -54,23 +53,14 @@ public class FuctionDeclaration {
      */
     public static void typedIdentifier(Deque<Token> tokens) throws SyntaxErrorException {
         VarDeclaration.typeChecker(tokens);
-
-        Token token = tokens.peek();
-        if (token.getType() != TokenType.IDENTIFIER) {
-            throw new SyntaxErrorException(token.getLexame(), Terminals.IDENTIFIER);
-        }
-        tokens.pop();
+        TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
     }
 
+    //todo melhorar
     public static void idListChecker(Deque<Token> tokens) throws SyntaxErrorException {
-        Token token = tokens.pop();
-        Token nextToken = tokens.peek();
-
-        if (token.getType() != TokenType.IDENTIFIER) {
-            tokens.push(token);
-            throw new SyntaxErrorException(token.getLexame(), Terminals.IDENTIFIER);
-        }
-        if (nextToken.thisLexameIs(COMMA.getVALUE())) {
+        TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+        if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
+            tokens.pop();
             idListChecker(tokens);
         }
     }

@@ -22,7 +22,10 @@ public enum Terminals {
     EQUALS("="),
     OPEN_PARENTHESES("("),
     CLOSE_PARENTHESES(")"),
-    COMMA(",");
+    COMMA(","),
+    TYPEDEF("typedef"),
+    STRUCT("struct"),
+    EXTENDS("extends");
 
     private final String VALUE;
 

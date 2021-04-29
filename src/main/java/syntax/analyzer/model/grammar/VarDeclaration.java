@@ -73,7 +73,7 @@ public class VarDeclaration {
             }
         }
     }
-    
+    //todo revisar
     public static void typeChecker(Token token) throws SyntaxErrorException {
         if (!token.thisLexameIs(BOOLEAN.getVALUE()) || !token.thisLexameIs(Terminals.STRING.getVALUE()) || !scalarChecker(token)) {
             throw new SyntaxErrorException(token.getLexame(), BOOLEAN, Terminals.STRING, INT, REAL);
