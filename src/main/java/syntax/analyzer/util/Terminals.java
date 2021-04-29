@@ -25,7 +25,11 @@ public enum Terminals {
     COMMA(","),
     TYPEDEF("typedef"),
     STRUCT("struct"),
-    EXTENDS("extends");
+    EXTENDS("extends"),
+    FUNCTION("function"),
+    RETURN("return"),
+    TRUE("true"),
+    FALSE("false");
 
     private final String VALUE;
 

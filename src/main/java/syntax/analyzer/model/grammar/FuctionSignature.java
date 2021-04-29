@@ -12,7 +12,7 @@ import syntax.analyzer.util.TerminalsUtil;
  *
  * @author Antonio Neto e Uellington Damasceno
  */
-public class FuctionDeclaration {
+public class FuctionSignature {
 
     //to do se tiver vazio
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException {
@@ -52,7 +52,7 @@ public class FuctionDeclaration {
     Param
      */
     public static void typedIdentifier(Deque<Token> tokens) throws SyntaxErrorException {
-        VarDeclaration.typeChecker(tokens);
+        TypeDeclaration.typeConsumer(tokens);
         TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
     }
 
