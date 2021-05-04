@@ -34,9 +34,14 @@ public class SyntaticalError extends Token {
     @Override
     public String toString() {
         return new StringBuilder()
+                .append(" ERRO SINTÁTICO, NA LINHA: ")
                 .append(lexame.getLine())
-                .append(" ERRO SINTÁTICO, ERA ESPERADO: ")
-                .append(expectedTokens.stream().collect(joining(", ", "\"", "\"")))
+                .append(" FOI ENCONTRADO UM: \'")
+                .append(lexame.getLexame())
+                .append("\' MAS ERA ESPERADO: ")
+                .append(expectedTokens
+                        .stream()
+                        .collect(joining("\' || \'", "\'", "\'")))
                 .toString();
     }
 }

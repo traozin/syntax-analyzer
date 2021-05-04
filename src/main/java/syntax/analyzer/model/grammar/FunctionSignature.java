@@ -12,7 +12,7 @@ import syntax.analyzer.util.TerminalsUtil;
  *
  * @author Antonio Neto e Uellington Damasceno
  */
-public class FuctionSignature {
+public class FunctionSignature {
 
     //to do se tiver vazio
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException {

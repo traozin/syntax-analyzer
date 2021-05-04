@@ -27,9 +27,25 @@ public enum Terminals {
     STRUCT("struct"),
     EXTENDS("extends"),
     FUNCTION("function"),
+    PROCEDURE("procedure"),
     RETURN("return"),
     TRUE("true"),
-    FALSE("false");
+    FALSE("false"),
+    MULTIPLICATION("*"),
+    DIVISION("/"),
+    ADD("+"),
+    MINUS("-"),
+    OR("||"),
+    AND("&&"),
+    EQUALITY("=="),
+    DIFFERENT("!="),
+    IF("if"),
+    ELSE("else"),
+    WHILE("while"),
+    DOT("."),
+    EXPRESSION("<Expression>"),
+    READ("read"),
+    PRINT("print");
 
     private final String VALUE;
 

@@ -7,10 +7,11 @@ import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
+import syntax.analyzer.util.TerminalsUtil;
 
 /**
  *
- * @author acmne
+ * @author Antonio Neto e Uellington Damasceno
  */
 public class TypeDeclaration {
 
@@ -21,13 +22,25 @@ public class TypeDeclaration {
 
     public static boolean primaryChecker(Token token) {
         return tokenTypes.stream()
-                .anyMatch((tokenType) -> token.getType().equals(tokenType))
+                .anyMatch(tokenType -> token.getType().equals(tokenType))
                 || token.thisLexameIs(Terminals.TRUE.getVALUE())
                 || token.thisLexameIs(Terminals.FALSE.getVALUE());
     }
 
-    public static boolean isType(Token token) {
-        return typeChecker(token) || primaryChecker(token);
+    public static void primaryConsumer(Deque<Token> tokens) throws SyntaxErrorException {
+        Token token = tokens.peek();
+        if (!primaryChecker(token)) {
+            throw new SyntaxErrorException(token.getLexame(), TRUE, FALSE, IDENTIFIER, REAL, STRING);
+        }
+        TerminalsUtil.consumerToken(tokens);
+    }
+
+    public static void primaryListConsumer(Deque<Token> tokens) throws SyntaxErrorException {
+        primaryConsumer(tokens);
+        if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
+            TerminalsUtil.consumerToken(tokens);
+            primaryListConsumer(tokens);
+        }
     }
 
     public static void typeConsumer(Deque<Token> tokens) throws SyntaxErrorException {
@@ -35,11 +48,13 @@ public class TypeDeclaration {
         if (!typeChecker(token)) {
             throw new SyntaxErrorException(token.getLexame(), BOOLEAN, Terminals.STRING, INT, REAL);
         }
-        tokens.pop();
+        TerminalsUtil.consumerToken(tokens);
     }
 
     public static boolean typeChecker(Token token) {
-        return token.thisLexameIs(BOOLEAN.getVALUE()) || token.thisLexameIs(Terminals.STRING.getVALUE()) || scalarChecker(token);
+        return token.thisLexameIs(BOOLEAN.getVALUE())
+                || token.thisLexameIs(Terminals.STRING.getVALUE())
+                || scalarChecker(token);
     }
 
     public static boolean scalarChecker(Token token) {
