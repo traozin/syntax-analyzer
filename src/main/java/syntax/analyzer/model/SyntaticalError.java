@@ -41,7 +41,7 @@ public class SyntaticalError extends Token {
                 .append("\' MAS ERA ESPERADO: ")
                 .append(expectedTokens
                         .stream()
-                        .collect(joining("\' || \'", "\'", "\'")))
+                        .collect(joining("\' ou \'", "\'", "\'")))
                 .toString();
     }
 }

@@ -5,6 +5,7 @@ import java.util.Deque;
 import java.util.function.Consumer;
 import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
+import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 
 /**
@@ -13,9 +14,9 @@ import syntax.analyzer.model.exceptions.SyntaxErrorException;
  */
 public class TerminalsUtil {
 
-    public static boolean testBeforeConsume(Deque<Token> tokens, Terminals terminal) {
+    public static boolean testBeforeConsume(Deque<Token> tokens, Terminals terminal) throws EOFNotExpectedException {
         if (tokens.isEmpty()) {
-            //TODO:fazer
+            throw new EOFNotExpectedException(terminal);
         }
         if (tokens.peek().thisLexameIs(terminal.getVALUE())) {
             tokens.pop();
@@ -31,19 +32,19 @@ public class TerminalsUtil {
         }
     }
 
-    public static void consumerTokenByLexame(Deque<Token> tokens, Terminals... terminals) throws SyntaxErrorException {
+    public static void consumerTokenByLexame(Deque<Token> tokens, Terminals... terminals) throws SyntaxErrorException, EOFNotExpectedException {
         consumerTokenByLexame(tokens, terminals.length, terminals);
     }
 
-    private static void consumerTokenByLexame(Deque<Token> tokens, int index, Terminals... terminals) throws SyntaxErrorException {
+    private static void consumerTokenByLexame(Deque<Token> tokens, int index, Terminals... terminals) throws SyntaxErrorException, EOFNotExpectedException {
         if (terminals.length < index) {
             consumerTokenByLexame(tokens, terminals[index++]);
         }
     }
 
-    public static void consumerTokenByLexame(Deque<Token> tokens, Terminals terminal) throws SyntaxErrorException {
+    public static void consumerTokenByLexame(Deque<Token> tokens, Terminals terminal) throws SyntaxErrorException, EOFNotExpectedException {
         if (tokens.isEmpty()) {
-            //todo fazer depois
+            throw new EOFNotExpectedException(terminal);
         }
 
         Token token = tokens.pop();
@@ -53,9 +54,9 @@ public class TerminalsUtil {
         }
     }
 
-    public static void consumerTokenByType(Deque<Token> tokens, TokenType tokenType, Terminals terminal) throws SyntaxErrorException {
+    public static void consumerTokenByType(Deque<Token> tokens, TokenType tokenType, Terminals terminal) throws SyntaxErrorException, EOFNotExpectedException {
         if (tokens.isEmpty()) {
-            //todo fazer depois
+            throw new EOFNotExpectedException(terminal);
         }
 
         Token token = tokens.pop();

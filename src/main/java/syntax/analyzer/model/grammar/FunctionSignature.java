@@ -3,6 +3,7 @@ package syntax.analyzer.model.grammar;
 import java.util.Deque;
 import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
+import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
@@ -15,7 +16,7 @@ import syntax.analyzer.util.TerminalsUtil;
 public class FunctionSignature {
 
     //to do se tiver vazio
-    public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         typedIdentifier(tokens);
 
         TerminalsUtil.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
@@ -38,7 +39,7 @@ public class FunctionSignature {
     }
 
     //todo melhorar
-    public static void paramsChecker(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void paramsChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         typedIdentifier(tokens);
         if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
             tokens.pop();
@@ -51,13 +52,13 @@ public class FunctionSignature {
     Func ID,
     Param
      */
-    public static void typedIdentifier(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void typedIdentifier(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TypeDeclaration.typeConsumer(tokens);
         TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
     }
 
     //todo melhorar
-    public static void idListChecker(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void idListChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
         if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
             tokens.pop();

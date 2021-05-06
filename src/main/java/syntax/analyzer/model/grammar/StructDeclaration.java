@@ -3,6 +3,7 @@ package syntax.analyzer.model.grammar;
 import java.util.Deque;
 import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
+import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
@@ -14,7 +15,7 @@ import syntax.analyzer.util.TerminalsUtil;
  */
 public class StructDeclaration {
 
-    public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TerminalsUtil.consumerTokenByLexame(tokens, TYPEDEF, STRUCT);
 
         Token token = tokens.peek();
@@ -33,7 +34,7 @@ public class StructDeclaration {
         TerminalsUtil.consumerTokenByLexame(tokens, SEMICOLON);
     }
 
-    public static void structDefConsumer(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void structDefConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         Token token = tokens.peek();
         VarDeclaration.fullChecker(tokens);
         
@@ -42,7 +43,7 @@ public class StructDeclaration {
         }
     }
     
-    public static void structUsageConsumer(Deque<Token> tokens) throws SyntaxErrorException{
+    public static void structUsageConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException{
         TerminalsUtil.consumerTokenByLexame(tokens, DOT);
         TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
     }

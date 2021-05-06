@@ -3,6 +3,7 @@ package syntax.analyzer.model.grammar;
 import java.util.Deque;
 import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
+import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
@@ -14,7 +15,7 @@ import syntax.analyzer.util.TerminalsUtil;
  */
 public class VarDeclaration {
 
-    public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         if (tokens.isEmpty()) {
             //se tiver vazio
         }
@@ -31,7 +32,7 @@ public class VarDeclaration {
         }
     }
 
-    public static void typedVariableConsumer(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void typedVariableConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         Token token = tokens.peek();
         if (!token.thisLexameIs(SEMICOLON.getVALUE())) {
 
@@ -47,12 +48,12 @@ public class VarDeclaration {
         }
     }
 
-    public static void variableConsumer(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void variableConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         variableDeclaratorConsumer(tokens);
     }
 
     //consumir token para dar certo
-    public static void variableDeclaratorConsumer(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void variableDeclaratorConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
         Token token = tokens.peek();
         if (token.thisLexameIs(EQUALS.getVALUE())) {
@@ -72,7 +73,7 @@ public class VarDeclaration {
         }
     }
 
-    public static void arraysDimensionConsumer(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void arraysDimensionConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         Token token = tokens.peek();
 
         if (token.thisLexameIs(OPEN_BRACKET.getVALUE())) {

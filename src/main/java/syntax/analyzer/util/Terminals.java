@@ -45,7 +45,12 @@ public enum Terminals {
     DOT("."),
     EXPRESSION("<Expression>"),
     READ("read"),
-    PRINT("print");
+    PRINT("print"),
+    LESS("<"),
+    GREATER(">"),
+    LESS_EQUAL("<="),
+    GREATER_EQUAL("<="),
+    EXCLAMATION("!");
 
     private final String VALUE;
 

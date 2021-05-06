@@ -3,6 +3,7 @@ package syntax.analyzer.model.grammar;
 import java.util.Deque;
 import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
+import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
@@ -14,7 +15,7 @@ import syntax.analyzer.util.TerminalsUtil;
  */
 public class Read {
 
-    public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TerminalsUtil.consumerTokenByLexame(tokens, READ);
         TerminalsUtil.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
         expressionReadConsumer(tokens);
@@ -22,7 +23,7 @@ public class Read {
         TerminalsUtil.consumerTokenByLexame(tokens, SEMICOLON);
     }
 
-    public static void expressionReadConsumer(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void expressionReadConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.STRING);
 
         Token token = tokens.peek();
@@ -37,7 +38,7 @@ public class Read {
         }
     }
 
-    public static void moreReadings(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void moreReadings(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TerminalsUtil.consumerTokenByLexame(tokens, COMMA);
         expressionReadConsumer(tokens);
     }
