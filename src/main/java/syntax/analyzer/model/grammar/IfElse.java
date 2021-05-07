@@ -14,8 +14,10 @@ import syntax.analyzer.util.TerminalsUtil;
 public class IfElse {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
+
         ifConsumer(tokens);
         elseConsumer(tokens);
+
     }
 
     public static void ifConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {

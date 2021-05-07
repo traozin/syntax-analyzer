@@ -1,8 +1,13 @@
 package syntax.analyzer.util;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
+import static java.util.stream.Collectors.toCollection;
+import java.util.stream.Stream;
 import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
@@ -14,22 +19,14 @@ import syntax.analyzer.model.exceptions.SyntaxErrorException;
  */
 public class TerminalsUtil {
 
+    private static final List<Deque<Token>> COMPLETED_PRODUCTIONS = new LinkedList();
+    private static final List<Deque<Token>> CHECKPOINTS = new LinkedList();
+
     public static boolean testBeforeConsume(Deque<Token> tokens, Terminals terminal) throws EOFNotExpectedException {
         if (tokens.isEmpty()) {
             throw new EOFNotExpectedException(terminal);
         }
-        if (tokens.peek().thisLexameIs(terminal.getVALUE())) {
-            tokens.pop();
-            return true;
-        }
-        return false;
-    }
-
-    public static void consumerTokenByLexameAndExecute(Deque<Token> tokens, Terminals terminal, Consumer<Deque<Token>> consumer) {
-        if (tokens.peek().thisLexameIs(terminal.getVALUE())) {
-            tokens.pop();
-            consumer.accept(tokens);
-        }
+        return tokens.peek().thisLexameIs(terminal.getVALUE());
     }
 
     public static void consumerTokenByLexame(Deque<Token> tokens, Terminals... terminals) throws SyntaxErrorException, EOFNotExpectedException {
@@ -52,6 +49,7 @@ public class TerminalsUtil {
             tokens.push(token);
             throw new SyntaxErrorException(token.getLexame(), terminal);
         }
+        System.out.println(token);
     }
 
     public static void consumerTokenByType(Deque<Token> tokens, TokenType tokenType, Terminals terminal) throws SyntaxErrorException, EOFNotExpectedException {
@@ -64,6 +62,7 @@ public class TerminalsUtil {
             tokens.push(token);
             throw new SyntaxErrorException(token.getLexame(), terminal);
         }
+        System.out.println(token);
     }
 
     public static boolean contains(Token token, Terminals... terminals) {
@@ -73,6 +72,23 @@ public class TerminalsUtil {
     }
 
     public static void consumerToken(Deque<Token> tokens) {
-        tokens.pop();
+        System.out.println(tokens.pop());
+    }
+
+    public static void complete(Deque<Token> tokens, int pos) {
+        Deque<Token> anotherDeque = CHECKPOINTS.get(pos-1);
+        COMPLETED_PRODUCTIONS.add(Stream
+                .generate(anotherDeque::pop)
+                .limit(anotherDeque.size() - tokens.size())
+                .collect(toCollection(ArrayDeque::new)));
+    }
+
+    public static void rollbackFor(int pos, Deque<Token> tokens) {
+        tokens = CHECKPOINTS.get(pos-1);
+    }
+
+    public static int createCheckpoint(Deque<Token> tokens) {
+        CHECKPOINTS.add(tokens);
+        return CHECKPOINTS.size();
     }
 }

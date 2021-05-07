@@ -16,6 +16,7 @@ import syntax.analyzer.util.TerminalsUtil;
 public class FunctionDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
+
         TerminalsUtil.consumerTokenByLexame(tokens, FUNCTION);
         TypeDeclaration.typeConsumer(tokens);
         TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
@@ -27,6 +28,7 @@ public class FunctionDeclaration {
             TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
         }
         blockFunctionChecker(tokens);
+
     }
 
     public static void blockFunctionChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
@@ -38,9 +40,14 @@ public class FunctionDeclaration {
 
     public static void returnChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TerminalsUtil.consumerTokenByLexame(tokens, Terminals.RETURN);
-        Token token = tokens.peek();
+
+        Token token = tokens.pop();
+        Token nextToken = tokens.peek();
+        tokens.push(token);
+
         boolean isEmptyReturn = TerminalsUtil.contains(token, Terminals.SEMICOLON);
         boolean isPrimaryReturn = TypeDeclaration.primaryChecker(token);
+
         if (!isEmptyReturn && !isPrimaryReturn) {
             throw new SyntaxErrorException(token.getLexame(),
                     SEMICOLON,
@@ -48,13 +55,23 @@ public class FunctionDeclaration {
                     TRUE,
                     FALSE,
                     STRING,
-                    REAL);
+                    REAL,
+                    INT);
         }
         //TODO: Verificar se é uma chamada de função ou uma expressão.
         try {
-            callFunctionConsumer(tokens);
+
+            if (token.getType() == TokenType.IDENTIFIER
+                    && nextToken.thisLexameIs(OPEN_PARENTHESES.getVALUE())) {
+                callFunctionConsumer(tokens);
+            } else if (token.getType() == TokenType.IDENTIFIER
+                    && nextToken.thisLexameIs(SEMICOLON.getVALUE())) {
+                TypeDeclaration.primaryConsumer(tokens);
+            } else {
+                Expressions.fullChecker(tokens);
+            }
         } catch (SyntaxErrorException e) {
-            throw new SyntaxErrorException(token.getLexame(),
+            throw new SyntaxErrorException(tokens.peek().getLexame(),
                     SEMICOLON,
                     IDENTIFIER,
                     TRUE,
@@ -78,42 +95,33 @@ public class FunctionDeclaration {
 
     public static void argsListConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         argConsumer(tokens);
-        if (tokens.peek().thisLexameIs(Terminals.COMMA.getVALUE())) {
+        if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
+            TerminalsUtil.consumerToken(tokens);
             argsListConsumer(tokens);
         }
     }
 
     public static void argConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         Token token = tokens.pop();
-        if (!TypeDeclaration.primaryChecker(token)) {
-            tokens.push(token);
-            throw new SyntaxErrorException(token.getLexame(),
-                    Terminals.IDENTIFIER,
-                    Terminals.TRUE,
-                    Terminals.FALSE,
-                    Terminals.REAL,
-                    Terminals.STRING
-            );
-        }
-        if (token.getType() == TokenType.IDENTIFIER) {
-            Token nextToken = tokens.pop();
-            if (nextToken.thisLexameIs(Terminals.OPEN_PARENTHESES.getVALUE())) {
-                tokens.push(nextToken);
-                tokens.push(token);
-                callFunctionConsumer(tokens);
-            } else if (nextToken.thisLexameIs(Terminals.COMMA.getVALUE())) {
-                tokens.push(token);
-                TerminalsUtil.consumerToken(tokens);
-                tokens.push(nextToken);
-                argsListConsumer(tokens);
+        Token nextToken = tokens.pop();
+        tokens.push(nextToken);
+        tokens.push(token);
+
+        if (TypeDeclaration.primaryChecker(token)) {
+            if (token.getType() == TokenType.IDENTIFIER
+                    && !nextToken.thisLexameIs(OPEN_PARENTHESES.getVALUE())) {
+                TypeDeclaration.primaryConsumer(tokens);
             } else {
-                tokens.push(token);
-                TerminalsUtil.consumerToken(tokens);
-                throw new SyntaxErrorException(token.getLexame(), Terminals.OPEN_PARENTHESES, Terminals.COMMA);
+                callFunctionConsumer(tokens);
             }
         } else {
-            tokens.push(token);
-            TypeDeclaration.primaryConsumer(tokens);
+            throw new SyntaxErrorException(token.getLexame(),
+                    STRING,
+                    BOOLEAN,
+                    FALSE,
+                    TRUE,
+                    IDENTIFIER,
+                    CALL_FUNCTION);
         }
     }
 }

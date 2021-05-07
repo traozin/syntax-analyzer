@@ -5,14 +5,11 @@ import lexical.analyzer.model.Token;
 import syntax.analyzer.util.TerminalsUtil;
 
 /**
- * atenção às chaves de função
  *
- * @author Antonio Neto e Uellington Damasceno
+ * @author Antônio Neto e Uellington Damasceno
  */
-public class StatementDeclaration {
+public class ConstDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) {
-
     }
-
 }

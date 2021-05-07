@@ -16,11 +16,13 @@ import syntax.analyzer.util.TerminalsUtil;
 public class Read {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
+
         TerminalsUtil.consumerTokenByLexame(tokens, READ);
         TerminalsUtil.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
         expressionReadConsumer(tokens);
         TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
         TerminalsUtil.consumerTokenByLexame(tokens, SEMICOLON);
+
     }
 
     public static void expressionReadConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
