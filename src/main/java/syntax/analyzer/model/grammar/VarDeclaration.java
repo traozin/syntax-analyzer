@@ -36,7 +36,7 @@ public class VarDeclaration {
     public static void typedVariableConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TypeDeclaration.typeConsumer(tokens);
         variableConsumer(tokens);
-        
+
         if (tokens.isEmpty()) {
             throw new EOFNotExpectedException(SEMICOLON);
         }
@@ -68,16 +68,16 @@ public class VarDeclaration {
             try {
                 Expressions.fullChecker(tokens);
             } catch (SyntaxErrorException e) {
-                TerminalsUtil.rollbackFor(check, tokens);
+                tokens = TerminalsUtil.rollbackFor(check);
                 try {
                     FunctionDeclaration.callFunctionConsumer(tokens);
                 } catch (SyntaxErrorException ex) {
-                    TerminalsUtil.rollbackFor(check, tokens);
+                    tokens = TerminalsUtil.rollbackFor(check);
                     try {
                         TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, IDENTIFIER);
                         StructDeclaration.structUsageConsumer(tokens);
                     } catch (SyntaxErrorException exx) {
-                        TerminalsUtil.rollbackFor(check, tokens);
+                        tokens = TerminalsUtil.rollbackFor(check);
                     }
                 }
             }

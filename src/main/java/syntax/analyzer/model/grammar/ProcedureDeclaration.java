@@ -16,7 +16,6 @@ import syntax.analyzer.util.TerminalsUtil;
 public class ProcedureDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-
         TerminalsUtil.consumerTokenByLexame(tokens, PROCEDURE);
         TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
         try {
@@ -25,13 +24,7 @@ public class ProcedureDeclaration {
             FunctionSignature.paramsChecker(tokens);
             TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
         }
-        blockProcedureConsumer(tokens);
-
+        StatementDeclaration.fullChecker(tokens);
     }
 
-    public static void blockProcedureConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TerminalsUtil.consumerTokenByLexame(tokens, OPEN_KEY);
-        //TODO: StatmentsList
-        TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_KEY);
-    }
 }

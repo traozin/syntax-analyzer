@@ -109,10 +109,10 @@ public class FunctionDeclaration {
 
         if (TypeDeclaration.primaryChecker(token)) {
             if (token.getType() == TokenType.IDENTIFIER
-                    && !nextToken.thisLexameIs(OPEN_PARENTHESES.getVALUE())) {
-                TypeDeclaration.primaryConsumer(tokens);
-            } else {
+                    && nextToken.thisLexameIs(OPEN_PARENTHESES.getVALUE())) {
                 callFunctionConsumer(tokens);
+            } else {
+                TypeDeclaration.primaryConsumer(tokens);
             }
         } else {
             throw new SyntaxErrorException(token.getLexame(),

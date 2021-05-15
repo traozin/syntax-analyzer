@@ -51,7 +51,10 @@ public enum Terminals {
     LESS_EQUAL("<="),
     GREATER_EQUAL("<="),
     EXCLAMATION("!"),
-    CALL_FUNCTION("<Function>");
+    CALL_FUNCTION("<Function>"),
+    START("start"),
+    INCREMENT("++"),
+    DECREMENT("--");
 
     private final String VALUE;
 

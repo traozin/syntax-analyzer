@@ -9,14 +9,13 @@ import syntax.analyzer.util.TerminalsUtil;
 
 /**
  *
- * @author Antônio Neto e Uellington Damasceno
+ * @author Antonio Neto e Uellington Damasceno
  */
-public class WhileDeclaration {
+public class ProcedureMain {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TerminalsUtil.consumerTokenByLexame(tokens, WHILE);
-        Expressions.fullChecker(tokens);
+        TerminalsUtil.consumerTokenByLexame(tokens, PROCEDURE);
+        TerminalsUtil.consumerTokenByLexame(tokens, START);
         StatementDeclaration.fullChecker(tokens);
     }
-
 }

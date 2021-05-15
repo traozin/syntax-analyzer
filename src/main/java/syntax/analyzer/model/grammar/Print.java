@@ -29,17 +29,23 @@ public class Print {
 
         try {
             TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.STRING);
-
-            Token token = tokens.peek();
-            if (token.thisLexameIs(DOT.getVALUE())) {
-                StructDeclaration.structUsageConsumer(tokens);
-            } else if (token.thisLexameIs(OPEN_BRACKET.getVALUE())) {
-                VarDeclaration.arraysDimensionConsumer(tokens);
-            } else if (token.thisLexameIs(COMMA.getVALUE())) {
-                morePrints(tokens);
-            } else {
-                throw new SyntaxErrorException(token.getLexame(), DOT, OPEN_BRACKET, COMMA);
+            try {
+                Token token = tokens.peek();
+                if (token.thisLexameIs(DOT.getVALUE())) {
+                    StructDeclaration.structUsageConsumer(tokens);
+                } else if (token.thisLexameIs(OPEN_BRACKET.getVALUE())) {
+                    VarDeclaration.arraysDimensionConsumer(tokens);
+                } else if (token.thisLexameIs(COMMA.getVALUE())) {
+                    morePrints(tokens);
+                } else {
+                    throw new SyntaxErrorException(token.getLexame(), DOT, OPEN_BRACKET, COMMA);
+                }
+            } catch (SyntaxErrorException e) {
+                if (!e.getSyntaticalError().thisLexameIs(CLOSE_PARENTHESES.getVALUE())) {
+                    throw e;
+                }
             }
+
         } catch (SyntaxErrorException e) {
             TerminalsUtil.consumerTokenByType(tokens, TokenType.STRING, Terminals.STRING);
             if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {

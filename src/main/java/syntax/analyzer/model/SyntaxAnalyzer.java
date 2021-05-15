@@ -6,9 +6,7 @@ import lexical.analyzer.model.SourceCode;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
-import syntax.analyzer.model.grammar.Expressions;
-import syntax.analyzer.model.grammar.FunctionDeclaration;
-import syntax.analyzer.model.grammar.VarDeclaration;
+import syntax.analyzer.model.grammar.ProcedureMain;
 
 /**
  *
@@ -22,10 +20,8 @@ public class SyntaxAnalyzer {
                     .stream()
                     .filter(token -> !token.isError())
                     .collect(toCollection(ArrayDeque::new));
-
-            VarDeclaration.fullChecker(tokens);
-//            Expressions.fullChecker(tokens);
-//            FunctionDeclaration.fullChecker(tokens);
+            
+            ProcedureMain.fullChecker(tokens);
 
         } catch (SyntaxErrorException ex) {
             System.out.println(ex.getSyntaticalError());

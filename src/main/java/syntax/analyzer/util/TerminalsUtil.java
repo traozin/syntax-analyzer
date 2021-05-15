@@ -76,19 +76,19 @@ public class TerminalsUtil {
     }
 
     public static void complete(Deque<Token> tokens, int pos) {
-        Deque<Token> anotherDeque = CHECKPOINTS.get(pos-1);
+        Deque<Token> anotherDeque = CHECKPOINTS.get(pos);
         COMPLETED_PRODUCTIONS.add(Stream
                 .generate(anotherDeque::pop)
                 .limit(anotherDeque.size() - tokens.size())
                 .collect(toCollection(ArrayDeque::new)));
     }
 
-    public static void rollbackFor(int pos, Deque<Token> tokens) {
-        tokens = CHECKPOINTS.get(pos-1);
+    public static Deque<Token> rollbackFor(int pos) {
+        return CHECKPOINTS.get(pos);
     }
-
     public static int createCheckpoint(Deque<Token> tokens) {
-        CHECKPOINTS.add(tokens);
-        return CHECKPOINTS.size();
+        
+        CHECKPOINTS.add(new ArrayDeque(tokens));
+        return CHECKPOINTS.size()-1;
     }
 }

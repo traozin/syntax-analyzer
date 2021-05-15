@@ -14,17 +14,13 @@ import syntax.analyzer.util.TerminalsUtil;
 public class IfElse {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-
         ifConsumer(tokens);
         elseConsumer(tokens);
-
     }
 
     public static void ifConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TerminalsUtil.consumerTokenByLexame(tokens, IF);
-        TerminalsUtil.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
         Expressions.fullChecker(tokens);
-        TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
         StatementDeclaration.fullChecker(tokens);
     }
 

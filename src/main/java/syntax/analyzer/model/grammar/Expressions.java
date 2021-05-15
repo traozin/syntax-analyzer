@@ -123,7 +123,6 @@ public class Expressions {
             } else {
                 try {
                     TypeDeclaration.primaryConsumer(tokens);
-
                 } catch (SyntaxErrorException e) {
                     throw new SyntaxErrorException(token.getLexame(),
                             IDENTIFIER,
@@ -133,14 +132,14 @@ public class Expressions {
                             OPEN_PARENTHESES
                     );
                 }
-
                 if (!tokens.isEmpty()) {
                     token = tokens.peek();
                     TokenType type = token.getType();
                     if (type != TokenType.RELATIONAL
                             && type != TokenType.ARITHMETIC
                             && type != TokenType.LOGICAL
-                            && type != TokenType.IDENTIFIER) {
+                            && type != TokenType.IDENTIFIER
+                            && !token.thisLexameIs(CLOSE_PARENTHESES.getVALUE())) {
                         throw new SyntaxErrorException(token.getLexame(), AND,
                                 OR,
                                 IDENTIFIER,
