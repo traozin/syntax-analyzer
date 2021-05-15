@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
 import static java.util.stream.Collectors.toCollection;
 import java.util.stream.Stream;
 import lexical.analyzer.enums.TokenType;

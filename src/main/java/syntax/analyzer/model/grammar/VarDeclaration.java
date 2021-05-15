@@ -109,16 +109,12 @@ public class VarDeclaration {
         if (token.thisLexameIs(OPEN_BRACKET.getVALUE())) {
             TerminalsUtil.consumerTokenByLexame(tokens, OPEN_BRACKET);
             token = tokens.peek();
-            if (token.thisLexameIs(INT.getVALUE())) {
-                TerminalsUtil.consumerTokenByLexame(tokens, INT);
+            if (token.getType() != null && token.getType() == TokenType.NUMBER) {
+                TerminalsUtil.consumerTokenByType(tokens, TokenType.NUMBER, Terminals.INT);
             } else if (token.getType() == TokenType.IDENTIFIER) {
                 TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
             } else {
-                try {
-                    Expressions.addExpression(tokens);
-                } catch (SyntaxErrorException e) {
-                    throw new SyntaxErrorException(token.getLexame(), IDENTIFIER, INT, EXPRESSION);
-                }
+                throw new SyntaxErrorException(token.getLexame(), IDENTIFIER, INT);
             }
             TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_BRACKET);
             arraysDimensionConsumer(tokens);

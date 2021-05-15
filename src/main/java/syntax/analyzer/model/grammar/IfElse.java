@@ -26,6 +26,7 @@ public class IfElse {
 
     public static void elseConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         if (TerminalsUtil.testBeforeConsume(tokens, ELSE)) {
+            TerminalsUtil.consumerTokenByLexame(tokens, ELSE);
             StatementDeclaration.fullChecker(tokens);
         }
     }

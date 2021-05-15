@@ -17,13 +17,9 @@ public class FunctionSignature {
 
     //to do se tiver vazio
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-
         typedIdentifier(tokens);
-
         TerminalsUtil.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
-
         Token token = tokens.peek();
-
         if (!token.thisLexameIs(CLOSE_PARENTHESES.getVALUE())) {
             try {
                 if (token.getType() == TokenType.IDENTIFIER) {
@@ -39,7 +35,6 @@ public class FunctionSignature {
         }
     }
 
-    //todo melhorar
     public static void paramsChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         typedIdentifier(tokens);
         if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {

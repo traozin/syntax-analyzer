@@ -139,7 +139,8 @@ public class Expressions {
                             && type != TokenType.ARITHMETIC
                             && type != TokenType.LOGICAL
                             && type != TokenType.IDENTIFIER
-                            && !token.thisLexameIs(CLOSE_PARENTHESES.getVALUE())) {
+                            && !token.thisLexameIs(CLOSE_PARENTHESES.getVALUE())
+                            && !token.thisLexameIs(SEMICOLON.getVALUE())) {
                         throw new SyntaxErrorException(token.getLexame(), AND,
                                 OR,
                                 IDENTIFIER,

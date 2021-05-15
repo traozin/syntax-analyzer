@@ -44,7 +44,11 @@ public class StatementDeclaration {
                         try {
                             IfElse.fullChecker(tokens);
                         } catch (SyntaxErrorException e6) {
-                            WhileDeclaration.fullChecker(tokens);
+                            try {
+                                WhileDeclaration.fullChecker(tokens);
+                            } catch (SyntaxErrorException e7) {
+                                FunctionDeclaration.returnChecker(tokens);
+                            }
                         }
                     }
                 }

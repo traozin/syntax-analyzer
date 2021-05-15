@@ -7,6 +7,7 @@ import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.model.grammar.ProcedureMain;
+import syntax.analyzer.model.grammar.Program;
 
 /**
  *
@@ -21,10 +22,7 @@ public class SyntaxAnalyzer {
                     .filter(token -> !token.isError())
                     .collect(toCollection(ArrayDeque::new));
             
-            ProcedureMain.fullChecker(tokens);
-
-        } catch (SyntaxErrorException ex) {
-            System.out.println(ex.getSyntaticalError());
+            Program.fullChecker(tokens);
         } catch (EOFNotExpectedException ex) {
             System.out.println(ex.getMessage());
         }

@@ -18,6 +18,7 @@ public class ProcedureDeclaration {
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TerminalsUtil.consumerTokenByLexame(tokens, PROCEDURE);
         TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+        TerminalsUtil.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
         try {
             TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
         } catch (SyntaxErrorException e) {

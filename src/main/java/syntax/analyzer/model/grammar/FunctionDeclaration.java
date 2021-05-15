@@ -16,7 +16,6 @@ import syntax.analyzer.util.TerminalsUtil;
 public class FunctionDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-
         TerminalsUtil.consumerTokenByLexame(tokens, FUNCTION);
         TypeDeclaration.typeConsumer(tokens);
         TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
@@ -28,19 +27,16 @@ public class FunctionDeclaration {
             TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
         }
         blockFunctionChecker(tokens);
-
     }
 
     public static void blockFunctionChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TerminalsUtil.consumerTokenByLexame(tokens, OPEN_KEY);
-        StatementDeclaration.fullChecker(tokens);
-        returnChecker(tokens);
+        StatementDeclaration.statementListChecker(tokens);
         TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_KEY);
     }
 
     public static void returnChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TerminalsUtil.consumerTokenByLexame(tokens, Terminals.RETURN);
-
         Token token = tokens.pop();
         Token nextToken = tokens.peek();
         tokens.push(token);
