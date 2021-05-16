@@ -21,7 +21,14 @@ public class T {
     private static final List<Deque<Token>> COMPLETED_PRODUCTIONS = new LinkedList();
     private static final List<Deque<Token>> CHECKPOINTS = new LinkedList();
 
-    public static boolean testBeforeConsume(Deque<Token> tokens, Terminals terminal) throws EOFNotExpectedException {
+    public static boolean testTypeBeforeConsume(Deque<Token> tokens, TokenType type, Terminals terminal) throws EOFNotExpectedException {
+        if (tokens.isEmpty()) {
+            throw new EOFNotExpectedException(terminal);
+        }
+        return tokens.peek().getType() == type;
+    }
+
+    public static boolean testLexameBeforeConsume(Deque<Token> tokens, Terminals terminal) throws EOFNotExpectedException {
         if (tokens.isEmpty()) {
             throw new EOFNotExpectedException(terminal);
         }
@@ -85,8 +92,9 @@ public class T {
     public static Deque<Token> rollbackFor(int pos) {
         return CHECKPOINTS.get(pos);
     }
+
     public static int createCheckpoint(Deque<Token> tokens) {
         CHECKPOINTS.add(new ArrayDeque(tokens));
-        return CHECKPOINTS.size()-1;
+        return CHECKPOINTS.size() - 1;
     }
 }

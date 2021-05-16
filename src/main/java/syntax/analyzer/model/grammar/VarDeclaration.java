@@ -25,7 +25,7 @@ public class VarDeclaration {
     public static void typedVariableConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TypeDeclaration.typeConsumer(tokens);
         variableConsumer(tokens);
-        
+
         T.consumerTokenByLexame(tokens, SEMICOLON);
 
         if (TypeDeclaration.typeChecker(tokens.peek())) {
@@ -35,10 +35,7 @@ public class VarDeclaration {
 
     public static void variableConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         variableDeclaratorConsumer(tokens);
-        if (tokens.isEmpty()) {
-            throw new EOFNotExpectedException(COMMA);
-        }
-        if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
+        if (T.testLexameBeforeConsume(tokens, COMMA)) {
             T.consumerToken(tokens);
             variableConsumer(tokens);
         }
@@ -46,11 +43,10 @@ public class VarDeclaration {
 
     public static void variableDeclaratorConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         T.consumerTokenByType(tokens, TokenType.IDENTIFIER, IDENTIFIER);
-        Token token = tokens.peek();
-        if (!token.thisLexameIs(SEMICOLON.getVALUE()) && !token.thisLexameIs(COMMA.getVALUE())) {
+        if (!T.testLexameBeforeConsume(tokens, SEMICOLON) && !T.testLexameBeforeConsume(tokens, COMMA)) {
             try {
                 arraysDimensionConsumer(tokens);
-                if (T.testBeforeConsume(tokens, EQUALS)) {
+                if (T.testLexameBeforeConsume(tokens, EQUALS)) {
                     T.consumerToken(tokens);
                     T.consumerTokenByLexame(tokens, OPEN_KEY);
                     varArgsConsumer(tokens);
@@ -58,7 +54,43 @@ public class VarDeclaration {
                 }
             } catch (SyntaxErrorException e) {
                 T.consumerTokenByLexame(tokens, EQUALS);
-                Expressions.fullChecker(tokens);
+                Token token = tokens.peek();
+
+                if (T.testTypeBeforeConsume(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER)
+                        || TypeDeclaration.primaryChecker(token)
+                        || token.thisLexameIs(LOCAL.getVALUE())
+                        || token.thisLexameIs(GLOBAL.getVALUE())) {
+
+                    token = tokens.pop();
+                    if (tokens.isEmpty()) {
+                        throw new EOFNotExpectedException(IDENTIFIER,
+                                EXPRESSION,
+                                DOT,
+                                GLOBAL,
+                                LOCAL);
+                    }
+                    Token nextToken = tokens.peek();
+                    tokens.push(token);
+
+                    if (token.thisLexameIs(GLOBAL.getVALUE())
+                            || token.thisLexameIs(LOCAL.getVALUE())) {
+                        VariableScope.scopeModifierConsumer(tokens);
+                        T.consumerTokenByLexame(tokens, DOT);
+                        T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+                    } else if (nextToken.thisLexameIs(DOT.getVALUE())) {
+                        T.consumerToken(tokens);
+                        StructDeclaration.structUsageConsumer(tokens);
+                    } else if (nextToken.thisLexameIs(OPEN_PARENTHESES.getVALUE())) {
+                        FunctionDeclaration.callFunctionConsumer(tokens);
+                    } else {
+                        try {
+                            Expressions.fullChecker(tokens);
+                        } catch (SyntaxErrorException e1) {
+                            throw new SyntaxErrorException(tokens.peek().getLexame(),
+                                    DOT, GLOBAL, LOCAL, OPEN_PARENTHESES, EXPRESSION);
+                        }
+                    }
+                }
             }
         }
 
@@ -66,7 +98,7 @@ public class VarDeclaration {
 
     public static void varArgsConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TypeDeclaration.primaryConsumer(tokens);
-        if (T.testBeforeConsume(tokens, COMMA)) {
+        if (T.testLexameBeforeConsume(tokens, COMMA)) {
             T.consumerToken(tokens);
             varArgsConsumer(tokens);
         }

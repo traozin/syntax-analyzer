@@ -33,22 +33,22 @@ public class Program {
                 StructDeclaration.fullChecker(tokens);
             } catch (SyntaxErrorException ex) {
                 try {
-                    Token token = tokens.pop();
-                    Token nextToken = tokens.peek();
-                    
-                    tokens.push(token);
-                    
-                    if (token.thisLexameIs(PROCEDURE.getVALUE())) {
-                        if (nextToken.thisLexameIs(START.getVALUE())) {
-                            ProcedureMain.fullChecker(tokens);
-                        } else {
-                            ProcedureDeclaration.fullChecker(tokens);
-                        }
-                    }
-                } catch (SyntaxErrorException ex1) {
+                    VarDeclaration.fullChecker(tokens);
+                } catch (SyntaxErrorException e) {
                     try {
-                        VarDeclaration.fullChecker(tokens);
-                    } catch (SyntaxErrorException e) {
+                        Token token = tokens.pop();
+                        Token nextToken = tokens.peek();
+
+                        tokens.push(token);
+
+                        if (token.thisLexameIs(PROCEDURE.getVALUE())) {
+                            if (nextToken.thisLexameIs(START.getVALUE())) {
+                                ProcedureMain.fullChecker(tokens);
+                            } else {
+                                ProcedureDeclaration.fullChecker(tokens);
+                            }
+                        }
+                    } catch (SyntaxErrorException ex1) {
                         System.out.println(e.getSyntaticalError());
                     }
                 }

@@ -54,7 +54,9 @@ public enum Terminals {
     CALL_FUNCTION("<Function>"),
     START("start"),
     INCREMENT("++"),
-    DECREMENT("--");
+    DECREMENT("--"),
+    GLOBAL("global"),
+    LOCAL("local");
 
     private final String VALUE;
 
@@ -73,5 +75,5 @@ public enum Terminals {
     private Terminals(String value) {
         this.VALUE = value;
     }
-
+    
 }

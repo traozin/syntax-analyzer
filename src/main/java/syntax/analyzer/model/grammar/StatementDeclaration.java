@@ -31,29 +31,41 @@ public class StatementDeclaration {
         try {
             Read.fullChecker(tokens);
         } catch (SyntaxErrorException e) {
-            System.out.println(e.getSyntaticalError());
+//            System.out.println(e.getSyntaticalError());
             try {
                 Print.fullChecker(tokens);
             } catch (SyntaxErrorException e2) {
-                System.out.println(e2.getSyntaticalError());
+//                System.out.println(e2.getSyntaticalError());
                 try {
                     VarDeclaration.fullChecker(tokens);//TODO
                 } catch (SyntaxErrorException e3) {
-                    System.out.println(e3.getSyntaticalError());
+//                    System.out.println(e3.getSyntaticalError());
                     try {
                         FunctionDeclaration.callFunctionConsumer(tokens);
                         T.consumerTokenByLexame(tokens, SEMICOLON);
                     } catch (SyntaxErrorException e4) {
-                        System.out.println(e4.getSyntaticalError());
+//                        System.out.println(e4.getSyntaticalError());
                         try {
                             IfElse.fullChecker(tokens);
                         } catch (SyntaxErrorException e5) {
-                            System.out.println(e5.getSyntaticalError());
+//                            System.out.println(e5.getSyntaticalError());
                             try {
                                 WhileDeclaration.fullChecker(tokens);
                             } catch (SyntaxErrorException e6) {
-                                System.out.println(e6.getSyntaticalError());
-                                FunctionDeclaration.returnChecker(tokens);
+//                                System.out.println(e6.getSyntaticalError());
+                                try {
+                                    FunctionDeclaration.returnChecker(tokens);
+                                } catch (SyntaxErrorException e7) {
+                                    throw new SyntaxErrorException(tokens.peek().getLexame(), 
+                                    READ, 
+                                    PRINT,
+                                    VAR,
+                                    CONST,
+                                    IDENTIFIER,
+                                    IF,
+                                    WHILE,
+                                    RETURN);
+                                }
                             }
                         }
                     }
