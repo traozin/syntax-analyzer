@@ -6,7 +6,7 @@ import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.TerminalsUtil;
+import syntax.analyzer.util.T;
 
 /**
  *
@@ -21,7 +21,7 @@ public class Expressions {
     public static void orExpressionConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         andExpression(tokens);
         if (!tokens.isEmpty() && tokens.peek().thisLexameIs(OR.getVALUE())) {
-            TerminalsUtil.consumerTokenByLexame(tokens, OR);
+            T.consumerTokenByLexame(tokens, OR);
             orExpressionConsumer(tokens);
         }
     }
@@ -29,7 +29,7 @@ public class Expressions {
     public static void andExpression(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         equalityExpression(tokens);
         if (!tokens.isEmpty() && tokens.peek().thisLexameIs(AND.getVALUE())) {
-            TerminalsUtil.consumerTokenByLexame(tokens, AND);
+            T.consumerTokenByLexame(tokens, AND);
             andExpression(tokens);
         }
     }
@@ -39,10 +39,10 @@ public class Expressions {
         if (!tokens.isEmpty()) {
             Token token = tokens.peek();
             if (token.thisLexameIs(EQUALITY.getVALUE())) {
-                TerminalsUtil.consumerTokenByLexame(tokens, EQUALITY);
+                T.consumerTokenByLexame(tokens, EQUALITY);
                 equalityExpression(tokens);
             } else if (token.thisLexameIs(DIFFERENT.getVALUE())) {
-                TerminalsUtil.consumerTokenByLexame(tokens, DIFFERENT);
+                T.consumerTokenByLexame(tokens, DIFFERENT);
                 equalityExpression(tokens);
             }
         }
@@ -53,16 +53,16 @@ public class Expressions {
         if (!tokens.isEmpty()) {
             Token token = tokens.peek();
             if (token.thisLexameIs(LESS.getVALUE())) {
-                TerminalsUtil.consumerTokenByLexame(tokens, LESS);
+                T.consumerTokenByLexame(tokens, LESS);
                 compareExpression(tokens);
             } else if (token.thisLexameIs(GREATER.getVALUE())) {
-                TerminalsUtil.consumerTokenByLexame(tokens, GREATER);
+                T.consumerTokenByLexame(tokens, GREATER);
                 compareExpression(tokens);
             } else if (token.thisLexameIs(LESS_EQUAL.getVALUE())) {
-                TerminalsUtil.consumerTokenByLexame(tokens, LESS_EQUAL);
+                T.consumerTokenByLexame(tokens, LESS_EQUAL);
                 compareExpression(tokens);
             } else if (token.thisLexameIs(GREATER_EQUAL.getVALUE())) {
-                TerminalsUtil.consumerTokenByLexame(tokens, GREATER_EQUAL);
+                T.consumerTokenByLexame(tokens, GREATER_EQUAL);
                 compareExpression(tokens);
             }
         }
@@ -73,10 +73,10 @@ public class Expressions {
         if (!tokens.isEmpty()) {
             Token token = tokens.peek();
             if (token.thisLexameIs(ADD.getVALUE())) {
-                TerminalsUtil.consumerTokenByLexame(tokens, ADD);
+                T.consumerTokenByLexame(tokens, ADD);
                 addExpression(tokens);
             } else if (token.thisLexameIs(MINUS.getVALUE())) {
-                TerminalsUtil.consumerTokenByLexame(tokens, MINUS);
+                T.consumerTokenByLexame(tokens, MINUS);
                 addExpression(tokens);
             }
         }
@@ -87,10 +87,10 @@ public class Expressions {
         if (!tokens.isEmpty()) {
             Token token = tokens.peek();
             if (token.thisLexameIs(MULTIPLICATION.getVALUE())) {
-                TerminalsUtil.consumerTokenByLexame(tokens, MULTIPLICATION);
+                T.consumerTokenByLexame(tokens, MULTIPLICATION);
                 multiplicationExpressionConsumer(tokens);
             } else if (token.thisLexameIs(DIVISION.getVALUE())) {
-                TerminalsUtil.consumerTokenByLexame(tokens, DIVISION);
+                T.consumerTokenByLexame(tokens, DIVISION);
                 multiplicationExpressionConsumer(tokens);
             }
         }
@@ -98,7 +98,7 @@ public class Expressions {
 
     public static void unaryExpression(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         if (!tokens.isEmpty() && tokens.peek().thisLexameIs(EXCLAMATION.getVALUE())) {
-            TerminalsUtil.consumerTokenByLexame(tokens, EXCLAMATION);
+            T.consumerTokenByLexame(tokens, EXCLAMATION);
             unaryExpression(tokens);
         } else {
             objectExpression(tokens);
@@ -117,9 +117,9 @@ public class Expressions {
         if (!tokens.isEmpty()) {
             Token token = tokens.peek();
             if (token.thisLexameIs(OPEN_PARENTHESES.getVALUE())) {
-                TerminalsUtil.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
+                T.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
                 fullChecker(tokens);
-                TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
+                T.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
             } else {
                 try {
                     TypeDeclaration.primaryConsumer(tokens);

@@ -7,7 +7,7 @@ import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.TerminalsUtil;
+import syntax.analyzer.util.T;
 
 /**
  *
@@ -16,15 +16,15 @@ import syntax.analyzer.util.TerminalsUtil;
 public class Read {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TerminalsUtil.consumerTokenByLexame(tokens, READ);
-        TerminalsUtil.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
+        T.consumerTokenByLexame(tokens, READ);
+        T.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
         expressionReadConsumer(tokens);
-        TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
-        TerminalsUtil.consumerTokenByLexame(tokens, SEMICOLON);
+        T.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
+        T.consumerTokenByLexame(tokens, SEMICOLON);
     }
 
     public static void expressionReadConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.STRING);
+        T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.STRING);
         try {
             Token token = tokens.peek();
             if (token.thisLexameIs(DOT.getVALUE())) {
@@ -44,7 +44,7 @@ public class Read {
     }
 
     public static void moreReadings(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TerminalsUtil.consumerTokenByLexame(tokens, COMMA);
+        T.consumerTokenByLexame(tokens, COMMA);
         expressionReadConsumer(tokens);
     }
 }

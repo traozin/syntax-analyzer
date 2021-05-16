@@ -5,7 +5,7 @@ import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.TerminalsUtil;
+import syntax.analyzer.util.T;
 
 /**
  *
@@ -14,7 +14,7 @@ import syntax.analyzer.util.TerminalsUtil;
 public class WhileDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TerminalsUtil.consumerTokenByLexame(tokens, WHILE);
+        T.consumerTokenByLexame(tokens, WHILE);
         Expressions.fullChecker(tokens);
         StatementDeclaration.fullChecker(tokens);
     }

@@ -5,7 +5,7 @@ import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.TerminalsUtil;
+import syntax.analyzer.util.T;
 
 /**
  *
@@ -15,9 +15,9 @@ import syntax.analyzer.util.TerminalsUtil;
 public class StatementDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TerminalsUtil.consumerTokenByLexame(tokens, OPEN_KEY);
+        T.consumerTokenByLexame(tokens, OPEN_KEY);
         statementListChecker(tokens);
-        TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_KEY);
+        T.consumerTokenByLexame(tokens, CLOSE_KEY);
     }
 
     public static void statementListChecker(Deque<Token> tokens) throws EOFNotExpectedException, SyntaxErrorException {
@@ -31,22 +31,28 @@ public class StatementDeclaration {
         try {
             Read.fullChecker(tokens);
         } catch (SyntaxErrorException e) {
+            System.out.println(e.getSyntaticalError());
             try {
                 Print.fullChecker(tokens);
             } catch (SyntaxErrorException e2) {
+                System.out.println(e2.getSyntaticalError());
                 try {
                     VarDeclaration.fullChecker(tokens);//TODO
-                } catch (SyntaxErrorException e4) {
+                } catch (SyntaxErrorException e3) {
+                    System.out.println(e3.getSyntaticalError());
                     try {
                         FunctionDeclaration.callFunctionConsumer(tokens);
-                        TerminalsUtil.consumerTokenByLexame(tokens, SEMICOLON);
-                    } catch (SyntaxErrorException e5) {
+                        T.consumerTokenByLexame(tokens, SEMICOLON);
+                    } catch (SyntaxErrorException e4) {
+                        System.out.println(e4.getSyntaticalError());
                         try {
                             IfElse.fullChecker(tokens);
-                        } catch (SyntaxErrorException e6) {
+                        } catch (SyntaxErrorException e5) {
+                            System.out.println(e5.getSyntaticalError());
                             try {
                                 WhileDeclaration.fullChecker(tokens);
-                            } catch (SyntaxErrorException e7) {
+                            } catch (SyntaxErrorException e6) {
+                                System.out.println(e6.getSyntaticalError());
                                 FunctionDeclaration.returnChecker(tokens);
                             }
                         }

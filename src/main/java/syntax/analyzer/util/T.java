@@ -16,7 +16,7 @@ import syntax.analyzer.model.exceptions.SyntaxErrorException;
  *
  * @author Antonio Neto e Uellington Damasceno
  */
-public class TerminalsUtil {
+public class T {
 
     private static final List<Deque<Token>> COMPLETED_PRODUCTIONS = new LinkedList();
     private static final List<Deque<Token>> CHECKPOINTS = new LinkedList();
@@ -86,7 +86,6 @@ public class TerminalsUtil {
         return CHECKPOINTS.get(pos);
     }
     public static int createCheckpoint(Deque<Token> tokens) {
-        
         CHECKPOINTS.add(new ArrayDeque(tokens));
         return CHECKPOINTS.size()-1;
     }

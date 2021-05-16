@@ -7,7 +7,7 @@ import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.TerminalsUtil;
+import syntax.analyzer.util.T;
 
 /**
  *
@@ -18,7 +18,7 @@ public class FunctionSignature {
     //to do se tiver vazio
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         typedIdentifier(tokens);
-        TerminalsUtil.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
+        T.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
         Token token = tokens.peek();
         if (!token.thisLexameIs(CLOSE_PARENTHESES.getVALUE())) {
             try {
@@ -38,7 +38,7 @@ public class FunctionSignature {
     public static void paramsChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         typedIdentifier(tokens);
         if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
-            TerminalsUtil.consumerToken(tokens);
+            T.consumerToken(tokens);
             paramsChecker(tokens);
         }
     }
@@ -50,14 +50,14 @@ public class FunctionSignature {
      */
     public static void typedIdentifier(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TypeDeclaration.typeConsumer(tokens);
-        TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+        T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
     }
 
     //todo melhorar
     public static void idListChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+        T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
         if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
-            TerminalsUtil.consumerToken(tokens);
+            T.consumerToken(tokens);
             idListChecker(tokens);
         }
     }

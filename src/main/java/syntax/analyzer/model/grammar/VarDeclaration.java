@@ -7,7 +7,7 @@ import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.TerminalsUtil;
+import syntax.analyzer.util.T;
 
 /**
  *
@@ -16,32 +16,19 @@ import syntax.analyzer.util.TerminalsUtil;
 public class VarDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-
-        if (tokens.isEmpty()) {
-            throw new EOFNotExpectedException(VAR);
-        }
-        Token first = tokens.peek();
-
-        if (first.thisLexameIs(VAR.getVALUE())) {
-            TerminalsUtil.consumerToken(tokens);
-            TerminalsUtil.consumerTokenByLexame(tokens, OPEN_KEY);
-            typedVariableConsumer(tokens);
-        } else if (first.thisLexameIs(CONST.getVALUE())) {
-            ConstDeclaration.fullChecker(tokens);
-        } else {
-            throw new SyntaxErrorException(first.getLexame(), VAR, CONST);
-        }
+        T.consumerTokenByLexame(tokens, VAR);
+        T.consumerTokenByLexame(tokens, OPEN_KEY);
+        typedVariableConsumer(tokens);
+        T.consumerTokenByLexame(tokens, CLOSE_KEY);
     }
 
     public static void typedVariableConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TypeDeclaration.typeConsumer(tokens);
         variableConsumer(tokens);
+        
+        T.consumerTokenByLexame(tokens, SEMICOLON);
 
-        if (tokens.isEmpty()) {
-            throw new EOFNotExpectedException(SEMICOLON);
-        }
-        if (tokens.peek().thisLexameIs(SEMICOLON.getVALUE())) {
-            TerminalsUtil.consumerToken(tokens);
+        if (TypeDeclaration.typeChecker(tokens.peek())) {
             typedVariableConsumer(tokens);
         }
     }
@@ -52,71 +39,52 @@ public class VarDeclaration {
             throw new EOFNotExpectedException(COMMA);
         }
         if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
-            TerminalsUtil.consumerToken(tokens);
+            T.consumerToken(tokens);
             variableConsumer(tokens);
         }
     }
 
     public static void variableDeclaratorConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-
-        TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, IDENTIFIER);
-        int check = TerminalsUtil.createCheckpoint(tokens);
+        T.consumerTokenByType(tokens, TokenType.IDENTIFIER, IDENTIFIER);
         Token token = tokens.peek();
-
-        if (token.thisLexameIs(EQUALS.getVALUE())) {
-            TerminalsUtil.consumerToken(tokens);
+        if (!token.thisLexameIs(SEMICOLON.getVALUE()) && !token.thisLexameIs(COMMA.getVALUE())) {
             try {
-                Expressions.fullChecker(tokens);
-            } catch (SyntaxErrorException e) {
-                tokens = TerminalsUtil.rollbackFor(check);
-                try {
-                    FunctionDeclaration.callFunctionConsumer(tokens);
-                } catch (SyntaxErrorException ex) {
-                    tokens = TerminalsUtil.rollbackFor(check);
-                    try {
-                        TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, IDENTIFIER);
-                        StructDeclaration.structUsageConsumer(tokens);
-                    } catch (SyntaxErrorException exx) {
-                        tokens = TerminalsUtil.rollbackFor(check);
-                    }
+                arraysDimensionConsumer(tokens);
+                if (T.testBeforeConsume(tokens, EQUALS)) {
+                    T.consumerToken(tokens);
+                    T.consumerTokenByLexame(tokens, OPEN_KEY);
+                    varArgsConsumer(tokens);
+                    T.consumerTokenByLexame(tokens, CLOSE_KEY);
                 }
+            } catch (SyntaxErrorException e) {
+                T.consumerTokenByLexame(tokens, EQUALS);
+                Expressions.fullChecker(tokens);
             }
-        } else if (token.thisLexameIs(OPEN_BRACKET.getVALUE())) {
-            arraysDimensionConsumer(tokens);
-            if (tokens.peek().thisLexameIs(EQUALS.getVALUE())) {
-                TerminalsUtil.consumerToken(tokens);
-                TerminalsUtil.consumerTokenByLexame(tokens, OPEN_KEY);
-                varArgsConsumer(tokens);
-                TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_KEY);
-            }
+        }
+
+    }
+
+    public static void varArgsConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
+        TypeDeclaration.primaryConsumer(tokens);
+        if (T.testBeforeConsume(tokens, COMMA)) {
+            T.consumerToken(tokens);
+            varArgsConsumer(tokens);
         }
     }
 
-    public static void varArgsConsumer(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void arraysDimensionConsumer(Deque<Token> tokens) throws EOFNotExpectedException, SyntaxErrorException {
+        T.consumerTokenByLexame(tokens, OPEN_BRACKET);
         try {
-            TypeDeclaration.primaryConsumer(tokens);
-            if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
-                TerminalsUtil.consumerToken(tokens);
-                varArgsConsumer(tokens);
+            T.consumerTokenByType(tokens, TokenType.NUMBER, Terminals.INT);
+        } catch (SyntaxErrorException ex) {
+            try {
+                T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+            } catch (SyntaxErrorException e) {
+                throw new SyntaxErrorException(tokens.peek().getLexame(), IDENTIFIER, INT);
             }
-        } catch (SyntaxErrorException e) {
-            throw e;
         }
-    }
-
-    public static void arraysDimensionConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        Token token = tokens.peek();
-        if (token.thisLexameIs(OPEN_BRACKET.getVALUE())) {
-            TerminalsUtil.consumerTokenByLexame(tokens, OPEN_BRACKET);
-            token = tokens.peek();
-            if (token.getType() != null && token.getType() == TokenType.NUMBER) {
-                TerminalsUtil.consumerTokenByType(tokens, TokenType.NUMBER, Terminals.INT);
-            } else if (token.getType() == TokenType.IDENTIFIER) {
-                TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-            } else {
-                throw new SyntaxErrorException(token.getLexame(), IDENTIFIER, INT);
-            }
-            TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_BRACKET);
+        T.consumerTokenByLexame(tokens, CLOSE_BRACKET);
+        if (tokens.peek().thisLexameIs(OPEN_BRACKET.getVALUE())) {
             arraysDimensionConsumer(tokens);
         }
     }

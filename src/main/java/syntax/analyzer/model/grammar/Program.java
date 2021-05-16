@@ -35,7 +35,9 @@ public class Program {
                 try {
                     Token token = tokens.pop();
                     Token nextToken = tokens.peek();
+                    
                     tokens.push(token);
+                    
                     if (token.thisLexameIs(PROCEDURE.getVALUE())) {
                         if (nextToken.thisLexameIs(START.getVALUE())) {
                             ProcedureMain.fullChecker(tokens);
@@ -44,8 +46,11 @@ public class Program {
                         }
                     }
                 } catch (SyntaxErrorException ex1) {
-                    System.out.println("Era var ou const");
-                    //TODO VAR AND CONST
+                    try {
+                        VarDeclaration.fullChecker(tokens);
+                    } catch (SyntaxErrorException e) {
+                        System.out.println(e.getSyntaticalError());
+                    }
                 }
             }
         }

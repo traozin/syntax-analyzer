@@ -7,7 +7,7 @@ import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.TerminalsUtil;
+import syntax.analyzer.util.T;
 
 /**
  *
@@ -32,13 +32,13 @@ public class TypeDeclaration {
         if (!primaryChecker(token)) {
             throw new SyntaxErrorException(token.getLexame(), TRUE, FALSE, IDENTIFIER, REAL, STRING);
         }
-        TerminalsUtil.consumerToken(tokens);
+        T.consumerToken(tokens);
     }
 
     public static void primaryListConsumer(Deque<Token> tokens) throws SyntaxErrorException {
         primaryConsumer(tokens);
         if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
-            TerminalsUtil.consumerToken(tokens);
+            T.consumerToken(tokens);
             primaryListConsumer(tokens);
         }
     }
@@ -48,7 +48,7 @@ public class TypeDeclaration {
         if (!typeChecker(token)) {
             throw new SyntaxErrorException(token.getLexame(), BOOLEAN, Terminals.STRING, INT, REAL);
         }
-        TerminalsUtil.consumerToken(tokens);
+        T.consumerToken(tokens);
     }
 
     public static boolean typeChecker(Token token) {

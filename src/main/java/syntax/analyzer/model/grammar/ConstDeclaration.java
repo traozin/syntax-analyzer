@@ -2,7 +2,7 @@ package syntax.analyzer.model.grammar;
 
 import java.util.Deque;
 import lexical.analyzer.model.Token;
-import syntax.analyzer.util.TerminalsUtil;
+import syntax.analyzer.util.T;
 
 /**
  *

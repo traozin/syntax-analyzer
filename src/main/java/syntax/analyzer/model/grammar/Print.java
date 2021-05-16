@@ -7,7 +7,7 @@ import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.TerminalsUtil;
+import syntax.analyzer.util.T;
 
 /**
  *
@@ -17,18 +17,18 @@ public class Print {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
 
-        TerminalsUtil.consumerTokenByLexame(tokens, PRINT);
-        TerminalsUtil.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
+        T.consumerTokenByLexame(tokens, PRINT);
+        T.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
         expressionPrintConsumer(tokens);
-        TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
-        TerminalsUtil.consumerTokenByLexame(tokens, SEMICOLON);
+        T.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
+        T.consumerTokenByLexame(tokens, SEMICOLON);
 
     }
 
     public static void expressionPrintConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
 
         try {
-            TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.STRING);
+            T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.STRING);
             try {
                 Token token = tokens.peek();
                 if (token.thisLexameIs(DOT.getVALUE())) {
@@ -47,7 +47,7 @@ public class Print {
             }
 
         } catch (SyntaxErrorException e) {
-            TerminalsUtil.consumerTokenByType(tokens, TokenType.STRING, Terminals.STRING);
+            T.consumerTokenByType(tokens, TokenType.STRING, Terminals.STRING);
             if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
                 morePrints(tokens);
             }
@@ -55,7 +55,7 @@ public class Print {
     }
 
     public static void morePrints(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TerminalsUtil.consumerTokenByLexame(tokens, COMMA);
+        T.consumerTokenByLexame(tokens, COMMA);
         expressionPrintConsumer(tokens);
     }
 }

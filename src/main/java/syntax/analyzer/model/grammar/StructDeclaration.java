@@ -7,7 +7,7 @@ import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.TerminalsUtil;
+import syntax.analyzer.util.T;
 
 /**
  *
@@ -17,22 +17,22 @@ public class StructDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
 
-        TerminalsUtil.consumerTokenByLexame(tokens, TYPEDEF, STRUCT);
+        T.consumerTokenByLexame(tokens, TYPEDEF, STRUCT);
 
         Token token = tokens.peek();
         if (token.thisLexameIs(OPEN_KEY.getVALUE())) {
-            TerminalsUtil.consumerTokenByLexame(tokens, OPEN_KEY);
+            T.consumerTokenByLexame(tokens, OPEN_KEY);
         } else if (token.thisLexameIs(EXTENDS.getVALUE())) {
-            TerminalsUtil.consumerTokenByLexame(tokens, EXTENDS);
-            TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-            TerminalsUtil.consumerTokenByLexame(tokens, OPEN_KEY);
+            T.consumerTokenByLexame(tokens, EXTENDS);
+            T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+            T.consumerTokenByLexame(tokens, OPEN_KEY);
         } else {
             throw new SyntaxErrorException(token.getLexame(), OPEN_KEY, EXTENDS);
         }
         structDefConsumer(tokens);
-        TerminalsUtil.consumerTokenByLexame(tokens, CLOSE_KEY);
-        TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-        TerminalsUtil.consumerTokenByLexame(tokens, SEMICOLON);
+        T.consumerTokenByLexame(tokens, CLOSE_KEY);
+        T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+        T.consumerTokenByLexame(tokens, SEMICOLON);
 
     }
 
@@ -46,7 +46,7 @@ public class StructDeclaration {
     }
 
     public static void structUsageConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TerminalsUtil.consumerTokenByLexame(tokens, DOT);
-        TerminalsUtil.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+        T.consumerTokenByLexame(tokens, DOT);
+        T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
     }
 }
