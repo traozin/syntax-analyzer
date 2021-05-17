@@ -5,7 +5,7 @@ import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.T;
+import syntax.analyzer.util.TokenUtil;
 
 /**
  *
@@ -14,8 +14,8 @@ import syntax.analyzer.util.T;
 public class ProcedureMain {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        T.consumerTokenByLexame(tokens, PROCEDURE);
-        T.consumerTokenByLexame(tokens, START);
+        TokenUtil.consumerByLexame(tokens, PROCEDURE);
+        TokenUtil.consumerByLexame(tokens, START);
         StatementDeclaration.fullChecker(tokens);
     }
 }

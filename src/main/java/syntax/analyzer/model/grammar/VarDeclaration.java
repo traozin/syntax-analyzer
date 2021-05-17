@@ -7,26 +7,26 @@ import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.T;
+import syntax.analyzer.util.TokenUtil;
 
 /**
  *
  * @author Antonio Neto e Uellington Damasceno
  */
-public class VarDeclaration {
+ public class VarDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        T.consumerTokenByLexame(tokens, VAR);
-        T.consumerTokenByLexame(tokens, OPEN_KEY);
+        TokenUtil.consumerByLexame(tokens, VAR);
+        TokenUtil.consumerByLexame(tokens, OPEN_KEY);
         typedVariableConsumer(tokens);
-        T.consumerTokenByLexame(tokens, CLOSE_KEY);
+        TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
     }
 
     public static void typedVariableConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TypeDeclaration.typeConsumer(tokens);
         variableConsumer(tokens);
 
-        T.consumerTokenByLexame(tokens, SEMICOLON);
+        TokenUtil.consumerByLexame(tokens, SEMICOLON);
         EOFNotExpectedException.throwIfEmpty(tokens, CLOSE_KEY);
         if (TypeDeclaration.typeChecker(tokens.peek())) {
             typedVariableConsumer(tokens);
@@ -34,31 +34,31 @@ public class VarDeclaration {
     }
 
     public static void variableConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        T.consumerTokenByType(tokens, TokenType.IDENTIFIER, IDENTIFIER);
-        if (T.testLexameBeforeConsume(tokens, EQUALS)) {
+        TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, IDENTIFIER);
+        if (TokenUtil.testLexameBeforeConsume(tokens, EQUALS)) {
             variableDeclaratorConsumer(tokens);
-        } else if (T.testLexameBeforeConsume(tokens, OPEN_BRACKET)) {
+        } else if (TokenUtil.testLexameBeforeConsume(tokens, OPEN_BRACKET)) {
             Arrays.dimensionConsumer(tokens);
-            if (T.testLexameBeforeConsume(tokens, EQUALS)) {
-                T.consumerToken(tokens);
+            if (TokenUtil.testLexameBeforeConsume(tokens, EQUALS)) {
+                TokenUtil.consumer(tokens);
                 Arrays.initialize(tokens);
             }
         }
-        if (T.testLexameBeforeConsume(tokens, COMMA)) {
-            T.consumerToken(tokens);
+        if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
+            TokenUtil.consumer(tokens);
             variableConsumer(tokens);
-        } else if (!T.testLexameBeforeConsume(tokens, SEMICOLON)) {
+        } else if (!TokenUtil.testLexameBeforeConsume(tokens, SEMICOLON)) {
             throw new SyntaxErrorException(tokens.peek().getLexame(), EQUALS, OPEN_BRACKET);
         }
     }
 
     public static void variableDeclaratorConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        if (!T.testLexameBeforeConsume(tokens, SEMICOLON) && !T.testLexameBeforeConsume(tokens, COMMA)) {
-            T.consumerTokenByLexame(tokens, EQUALS);
+        if (!TokenUtil.testLexameBeforeConsume(tokens, SEMICOLON) && !TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
+            TokenUtil.consumerByLexame(tokens, EQUALS);
             EOFNotExpectedException.throwIfEmpty(tokens, IDENTIFIER, LOCAL, GLOBAL, REAL, INT, TRUE, FALSE);
             Token token = tokens.peek();
 
-            if (T.testTypeBeforeConsume(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER)
+            if (TokenUtil.testTypeBeforeConsume(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER)
                     || TypeDeclaration.primaryChecker(token)
                     || token.thisLexameIs(LOCAL.getVALUE())
                     || token.thisLexameIs(GLOBAL.getVALUE())) {
@@ -71,7 +71,7 @@ public class VarDeclaration {
                         || token.thisLexameIs(LOCAL.getVALUE())) {
                     VarScope.typedVariableScoped(tokens);
                 } else if (nextToken.thisLexameIs(DOT.getVALUE())) {
-                    T.consumerToken(tokens);
+                    TokenUtil.consumer(tokens);
                     StructDeclaration.structUsageConsumer(tokens);
                 } else if (nextToken.thisLexameIs(OPEN_PARENTHESES.getVALUE())) {
                     FunctionDeclaration.callFunctionConsumer(tokens);
@@ -89,8 +89,8 @@ public class VarDeclaration {
 
     public static void varArgsConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TypeDeclaration.primaryConsumer(tokens);
-        if (T.testLexameBeforeConsume(tokens, COMMA)) {
-            T.consumerToken(tokens);
+        if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
+            TokenUtil.consumer(tokens);
             varArgsConsumer(tokens);
         }
     }

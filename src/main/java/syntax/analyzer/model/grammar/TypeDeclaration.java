@@ -8,7 +8,7 @@ import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.T;
+import syntax.analyzer.util.TokenUtil;
 
 /**
  *
@@ -34,13 +34,13 @@ public class TypeDeclaration {
         if (!primaryChecker(token)) {
             throw new SyntaxErrorException(token.getLexame(), TRUE, FALSE, IDENTIFIER, REAL, STRING);
         }
-        T.consumerToken(tokens);
+        TokenUtil.consumer(tokens);
     }
 
     public static void primaryListConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         primaryConsumer(tokens);
-        if (T.testLexameBeforeConsume(tokens, COMMA)) {
-            T.consumerToken(tokens);
+        if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
+            TokenUtil.consumer(tokens);
             primaryListConsumer(tokens);
         }
     }
@@ -51,7 +51,7 @@ public class TypeDeclaration {
         if (!typeChecker(token)) {
             throw new SyntaxErrorException(token.getLexame(), BOOLEAN, IDENTIFIER, STRING, INT, REAL);
         }
-        T.consumerToken(tokens);
+        TokenUtil.consumer(tokens);
     }
 
     public static boolean typeChecker(Token token) {
@@ -73,7 +73,7 @@ public class TypeDeclaration {
                 && token.getType() != TokenType.STRING) {
             throw new SyntaxErrorException(token.getLexame(), TRUE, FALSE, STRING, INT, REAL);
         }
-        T.consumerToken(tokens);
+        TokenUtil.consumer(tokens);
     }
 
 }

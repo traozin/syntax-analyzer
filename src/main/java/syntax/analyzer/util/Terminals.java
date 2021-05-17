@@ -56,7 +56,8 @@ public enum Terminals {
     INCREMENT("++"),
     DECREMENT("--"),
     GLOBAL("global"),
-    LOCAL("local");
+    LOCAL("local"),
+    THEN("then");
 
     private final String VALUE;
 

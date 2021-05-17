@@ -7,7 +7,7 @@ import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.T;
+import syntax.analyzer.util.TokenUtil;
 
 /**
  *
@@ -16,20 +16,20 @@ import syntax.analyzer.util.T;
 public class Read {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        T.consumerTokenByLexame(tokens, READ);
-        T.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
+        TokenUtil.consumerByLexame(tokens, READ);
+        TokenUtil.consumerByLexame(tokens, OPEN_PARENTHESES);
         expressionReadConsumer(tokens);
-        T.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
+        TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
     }
 
     public static void expressionReadConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.STRING);
+        TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.STRING);
         try {
-            if (T.testLexameBeforeConsume(tokens, DOT)) {
+            if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
                 StructDeclaration.structUsageConsumer(tokens);
-            } else if (T.testLexameBeforeConsume(tokens, OPEN_BRACKET)) {
+            } else if (TokenUtil.testLexameBeforeConsume(tokens, OPEN_BRACKET)) {
                 Arrays.dimensionConsumer(tokens);
-            } else if (T.testLexameBeforeConsume(tokens, COMMA)) {
+            } else if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
                 moreReadings(tokens);
             } else {
                 throw new SyntaxErrorException(tokens.peek().getLexame(), DOT, OPEN_BRACKET, COMMA);
@@ -42,7 +42,7 @@ public class Read {
     }
 
     public static void moreReadings(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        T.consumerTokenByLexame(tokens, COMMA);
+        TokenUtil.consumerByLexame(tokens, COMMA);
         expressionReadConsumer(tokens);
     }
 }

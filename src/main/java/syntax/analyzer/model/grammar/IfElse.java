@@ -5,7 +5,7 @@ import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.T;
+import syntax.analyzer.util.TokenUtil;
 
 /**
  *
@@ -19,14 +19,15 @@ public class IfElse {
     }
 
     public static void ifConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        T.consumerTokenByLexame(tokens, IF);
+        TokenUtil.consumerByLexame(tokens, IF);
         Expressions.fullChecker(tokens);
+        TokenUtil.consumerByLexame(tokens, THEN);
         StatementDeclaration.fullChecker(tokens);
     }
 
     public static void elseConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        if (T.testLexameBeforeConsume(tokens, ELSE)) {
-            T.consumerTokenByLexame(tokens, ELSE);
+        if (TokenUtil.testLexameBeforeConsume(tokens, ELSE)) {
+            TokenUtil.consumerByLexame(tokens, ELSE);
             StatementDeclaration.fullChecker(tokens);
         }
     }

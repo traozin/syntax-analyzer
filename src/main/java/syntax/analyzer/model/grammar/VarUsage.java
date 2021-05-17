@@ -5,7 +5,7 @@ import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
-import syntax.analyzer.util.T;
+import syntax.analyzer.util.TokenUtil;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
 
@@ -16,16 +16,16 @@ import static syntax.analyzer.util.Terminals.*;
 public class VarUsage {
 
     public static void fullChecker(Deque<Token> tokens) throws EOFNotExpectedException, SyntaxErrorException {
-        if (T.testLexameBeforeConsume(tokens, EQUALS)) {
+        if (TokenUtil.testLexameBeforeConsume(tokens, EQUALS)) {
             VarDeclaration.variableDeclaratorConsumer(tokens);
-        } else if (T.testLexameBeforeConsume(tokens, DOT)) {
-            T.consumerToken(tokens);
-            T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-            if (!T.testLexameBeforeConsume(tokens, SEMICOLON)) {
-                T.consumerTokenByLexame(tokens, EQUALS);
+        } else if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
+            TokenUtil.consumer(tokens);
+            TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+            if (!TokenUtil.testLexameBeforeConsume(tokens, SEMICOLON)) {
+                TokenUtil.consumerByLexame(tokens, EQUALS);
                 try {
                     VarScope.typedVariableScoped(tokens);
-                    if (T.testLexameBeforeConsume(tokens, DOT)) {
+                    if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
                         StructDeclaration.structUsageConsumer(tokens);
                     }
                 } catch (SyntaxErrorException e1) {
@@ -40,11 +40,11 @@ public class VarUsage {
                         FunctionDeclaration.callFunctionConsumer(tokens);
                     } else if (token.getType() == TokenType.IDENTIFIER
                             && nextToken.thisLexameIs(DOT.getVALUE())) {
-                        T.consumerToken(tokens);
+                        TokenUtil.consumer(tokens);
                         StructDeclaration.structUsageConsumer(tokens);
                     } else if (token.getType() == TokenType.IDENTIFIER
                             && nextToken.thisLexameIs(OPEN_BRACKET.getVALUE())) {
-                        T.consumerToken(tokens);
+                        TokenUtil.consumer(tokens);
                         Arrays.dimensionConsumer(tokens);
                     } else {
                         Expressions.fullChecker(tokens);
@@ -52,15 +52,15 @@ public class VarUsage {
                 }
             }
 
-        } else if (T.testLexameBeforeConsume(tokens, OPEN_BRACKET)) {
+        } else if (TokenUtil.testLexameBeforeConsume(tokens, OPEN_BRACKET)) {
             Arrays.dimensionConsumer(tokens);
             try {
-                T.consumerTokenByLexame(tokens, SEMICOLON);
+                TokenUtil.consumerByLexame(tokens, SEMICOLON);
             } catch (SyntaxErrorException e) {
-                T.consumerTokenByLexame(tokens, EQUALS);
+                TokenUtil.consumerByLexame(tokens, EQUALS);
                 try {
                     VarScope.typedVariableScoped(tokens);
-                    if (T.testLexameBeforeConsume(tokens, DOT)) {
+                    if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
                         StructDeclaration.structUsageConsumer(tokens);
                     }
                 } catch (SyntaxErrorException e1) {
@@ -72,15 +72,15 @@ public class VarUsage {
 
                     if (token.getType() == TokenType.IDENTIFIER
                             && nextToken.thisLexameIs(DOT.getVALUE())) {
-                        T.consumerToken(tokens);
+                        TokenUtil.consumer(tokens);
                         StructDeclaration.structUsageConsumer(tokens);
                     } else if (token.getType() == TokenType.IDENTIFIER
                             && nextToken.thisLexameIs(OPEN_BRACKET.getVALUE())) {
-                        T.consumerToken(tokens);
+                        TokenUtil.consumer(tokens);
                         Arrays.dimensionConsumer(tokens);
                     } else if (TypeDeclaration.primaryChecker(token)) {
                         TypeDeclaration.primaryConsumer(tokens);
-                    } else if (T.testLexameBeforeConsume(tokens, OPEN_KEY)) {
+                    } else if (TokenUtil.testLexameBeforeConsume(tokens, OPEN_KEY)) {
                         Arrays.initialize(tokens);
                     }
                 }

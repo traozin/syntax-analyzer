@@ -7,7 +7,7 @@ import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.T;
+import syntax.analyzer.util.TokenUtil;
 
 /**
  *
@@ -18,9 +18,9 @@ public class FunctionSignature {
     //to do se tiver vazio
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         typedIdentifier(tokens);
-        T.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
+        TokenUtil.consumerByLexame(tokens, OPEN_PARENTHESES);
         
-        if (!T.testLexameBeforeConsume(tokens, CLOSE_PARENTHESES)) {
+        if (!TokenUtil.testLexameBeforeConsume(tokens, CLOSE_PARENTHESES)) {
             try {
                 if (tokens.peek().getType() == TokenType.IDENTIFIER) {
                     idListChecker(tokens);
@@ -37,8 +37,8 @@ public class FunctionSignature {
 
     public static void paramsChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         typedIdentifier(tokens);
-        if (T.testLexameBeforeConsume(tokens, COMMA)) {
-            T.consumerToken(tokens);
+        if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
+            TokenUtil.consumer(tokens);
             paramsChecker(tokens);
         }
     }
@@ -50,14 +50,14 @@ public class FunctionSignature {
      */
     public static void typedIdentifier(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TypeDeclaration.typeConsumer(tokens);
-        T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+        TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
     }
 
     //todo melhorar
     public static void idListChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-        if (T.testLexameBeforeConsume(tokens, COMMA)) {
-            T.consumerToken(tokens);
+        TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+        if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
+            TokenUtil.consumer(tokens);
             idListChecker(tokens);
         }
     }

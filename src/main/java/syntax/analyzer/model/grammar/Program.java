@@ -4,10 +4,12 @@ import java.util.Deque;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
+import syntax.analyzer.util.ErrorManager;
 import static syntax.analyzer.util.Terminals.*;
+import syntax.analyzer.util.TokenUtil;
 
 /**
- * TODO: testar struct, procedure, function, const e var
+ *
  *
  * @author Antonio Neto e Uellington Damasceno
  */
@@ -23,8 +25,8 @@ public class Program {
             if (!tokens.isEmpty()) {
                 globalStatementsList(tokens);
             }
-        } catch (SyntaxErrorException ex) {
-            System.out.println(ex.getSyntaticalError());
+        } catch (SyntaxErrorException e1) {
+            System.out.println(e1.getSyntaticalError());
         }
     }
 
@@ -57,6 +59,10 @@ public class Program {
             } else {
                 ProcedureDeclaration.fullChecker(tokens);
             }
+        } else if (token.thisLexameIs(OPEN_KEY.getVALUE())) {
+            ErrorManager.genericBlockConsumer(tokens);
+        } else {
+            ErrorManager.consumer(tokens);
         }
     }
 }

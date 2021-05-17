@@ -7,7 +7,7 @@ import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
-import syntax.analyzer.util.T;
+import syntax.analyzer.util.TokenUtil;
 
 /**
  *
@@ -16,32 +16,32 @@ import syntax.analyzer.util.T;
 public class FunctionDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        T.consumerTokenByLexame(tokens, FUNCTION);
+        TokenUtil.consumerByLexame(tokens, FUNCTION);
         TypeDeclaration.typeConsumer(tokens);
-        T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-        T.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
+        TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+        TokenUtil.consumerByLexame(tokens, OPEN_PARENTHESES);
         try {
-            T.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
+            TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
         } catch (SyntaxErrorException e) {
             FunctionSignature.paramsChecker(tokens);
-            T.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
+            TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
         }
         blockFunctionChecker(tokens);
     }
 
     public static void blockFunctionChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        T.consumerTokenByLexame(tokens, OPEN_KEY);
+        TokenUtil.consumerByLexame(tokens, OPEN_KEY);
         StatementDeclaration.statementListChecker(tokens);
-        T.consumerTokenByLexame(tokens, CLOSE_KEY);
+        TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
     }
 
     public static void returnChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        T.consumerTokenByLexame(tokens, Terminals.RETURN);
+        TokenUtil.consumerByLexame(tokens, Terminals.RETURN);
         Token token = tokens.pop();
         Token nextToken = tokens.peek();
         tokens.push(token);
 
-        boolean isEmptyReturn = T.contains(token, Terminals.SEMICOLON);
+        boolean isEmptyReturn = TokenUtil.contains(token, Terminals.SEMICOLON);
         boolean isPrimaryReturn = TypeDeclaration.primaryChecker(token);
 
         if (!isEmptyReturn && !isPrimaryReturn) {
@@ -75,24 +75,24 @@ public class FunctionDeclaration {
                     STRING,
                     REAL);
         }
-        T.consumerTokenByLexame(tokens, Terminals.SEMICOLON);
+        TokenUtil.consumerByLexame(tokens, Terminals.SEMICOLON);
     }
 
     public static void callFunctionConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-        T.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
+        TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+        TokenUtil.consumerByLexame(tokens, OPEN_PARENTHESES);
         try {
-            T.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
+            TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
         } catch (SyntaxErrorException ex) {
             argsListConsumer(tokens);
-            T.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
+            TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
         }
     }
 
     public static void argsListConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         argConsumer(tokens);
-        if (T.testLexameBeforeConsume(tokens, COMMA)) {
-            T.consumerToken(tokens);
+        if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
+            TokenUtil.consumer(tokens);
             argsListConsumer(tokens);
         }
     }

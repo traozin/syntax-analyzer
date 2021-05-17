@@ -7,6 +7,7 @@ import static lexical.analyzer.enums.TokenType.LINE_COMMENT;
 import lexical.analyzer.model.SourceCode;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
+import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.model.grammar.Program;
 
 /**
@@ -26,7 +27,7 @@ public class SyntaxAnalyzer {
             Program.fullChecker(tokens);
         } catch (EOFNotExpectedException ex) {
             System.out.println(ex.getMessage());
-        }
+        } 
         return code;
     }
 }
