@@ -91,7 +91,7 @@ public class FunctionDeclaration {
 
     public static void argsListConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         argConsumer(tokens);
-        if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
+        if (T.testLexameBeforeConsume(tokens, COMMA)) {
             T.consumerToken(tokens);
             argsListConsumer(tokens);
         }

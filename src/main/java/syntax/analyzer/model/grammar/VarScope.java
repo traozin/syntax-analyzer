@@ -21,8 +21,25 @@ public class VarScope {
             try {
                 VarDeclaration.variableDeclaratorConsumer(tokens);
             } catch (SyntaxErrorException e) {
+                EOFNotExpectedException.throwIfEmpty(tokens, DOT,
+                        EQUALS,
+                        OPEN_BRACKET);
                 Token token = tokens.pop();
+                EOFNotExpectedException.throwIfEmpty(tokens, IDENTIFIER,
+                        LOCAL,
+                        GLOBAL,
+                        TRUE,
+                        FALSE,
+                        INT,
+                        STRING,
+                        REAL);
                 Token nextToken = tokens.pop();
+                EOFNotExpectedException.throwIfEmpty(tokens, DOT,
+                        OPEN_PARENTHESES,
+                        EQUALS,
+                        CLOSE_BRACKET,
+                        SEMICOLON,
+                        OPEN_BRACKET);
                 Token nextNextToken = tokens.peek();
                 tokens.push(nextToken);
                 tokens.push(token);

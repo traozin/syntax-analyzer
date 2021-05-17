@@ -28,7 +28,7 @@ public class Arrays {
             }
         }
         T.consumerTokenByLexame(tokens, CLOSE_BRACKET);
-        if (tokens.peek().thisLexameIs(OPEN_BRACKET.getVALUE())) {
+        if (T.testLexameBeforeConsume(tokens, OPEN_BRACKET)){
             dimensionConsumer(tokens);
         }
     }

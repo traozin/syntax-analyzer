@@ -69,6 +69,7 @@ public class StatementDeclaration {
             T.consumerTokenByLexame(tokens, SEMICOLON);
         } else if (token.getType() == TokenType.IDENTIFIER) {
             Token t1 = tokens.pop();
+            EOFNotExpectedException.throwIfEmpty(tokens, OPEN_PARENTHESES, IDENTIFIER);
             Token t2 = tokens.peek();
             tokens.push(t1);
             if (t2.thisLexameIs(OPEN_PARENTHESES.getVALUE())) {

@@ -14,6 +14,7 @@ import static syntax.analyzer.util.Terminals.*;
  * @author Antonio Neto e Uellington Damasceno
  */
 public class VarUsage {
+
     public static void fullChecker(Deque<Token> tokens) throws EOFNotExpectedException, SyntaxErrorException {
         if (T.testLexameBeforeConsume(tokens, EQUALS)) {
             VarDeclaration.variableDeclaratorConsumer(tokens);
@@ -28,7 +29,9 @@ public class VarUsage {
                         StructDeclaration.structUsageConsumer(tokens);
                     }
                 } catch (SyntaxErrorException e1) {
+                    EOFNotExpectedException.throwIfEmpty(tokens, IDENTIFIER);
                     Token token = tokens.pop();
+                    EOFNotExpectedException.throwIfEmpty(tokens, OPEN_PARENTHESES, DOT, OPEN_BRACKET);
                     Token nextToken = tokens.peek();
                     tokens.push(token);
 
@@ -61,7 +64,9 @@ public class VarUsage {
                         StructDeclaration.structUsageConsumer(tokens);
                     }
                 } catch (SyntaxErrorException e1) {
+                    EOFNotExpectedException.throwIfEmpty(tokens, IDENTIFIER);
                     Token token = tokens.pop();
+                    EOFNotExpectedException.throwIfEmpty(tokens, DOT, OPEN_BRACKET);
                     Token nextToken = tokens.peek();
                     tokens.push(token);
 

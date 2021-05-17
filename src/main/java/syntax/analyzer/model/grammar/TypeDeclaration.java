@@ -28,7 +28,8 @@ public class TypeDeclaration {
                 || token.thisLexameIs(Terminals.FALSE.getVALUE());
     }
 
-    public static void primaryConsumer(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void primaryConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
+        EOFNotExpectedException.throwIfEmpty(tokens, TRUE, FALSE, IDENTIFIER, REAL, STRING);
         Token token = tokens.peek();
         if (!primaryChecker(token)) {
             throw new SyntaxErrorException(token.getLexame(), TRUE, FALSE, IDENTIFIER, REAL, STRING);
@@ -36,18 +37,19 @@ public class TypeDeclaration {
         T.consumerToken(tokens);
     }
 
-    public static void primaryListConsumer(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void primaryListConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         primaryConsumer(tokens);
-        if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
+        if (T.testLexameBeforeConsume(tokens, COMMA)) {
             T.consumerToken(tokens);
             primaryListConsumer(tokens);
         }
     }
 
-    public static void typeConsumer(Deque<Token> tokens) throws SyntaxErrorException {
+    public static void typeConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
+        EOFNotExpectedException.throwIfEmpty(tokens, BOOLEAN, IDENTIFIER, REAL, STRING, INT);
         Token token = tokens.peek();
         if (!typeChecker(token)) {
-            throw new SyntaxErrorException(token.getLexame(), BOOLEAN, Terminals.STRING, INT, REAL);
+            throw new SyntaxErrorException(token.getLexame(), BOOLEAN, IDENTIFIER, STRING, INT, REAL);
         }
         T.consumerToken(tokens);
     }
@@ -63,9 +65,7 @@ public class TypeDeclaration {
     }
 
     public static void literalConsumer(Deque<Token> tokens) throws EOFNotExpectedException, SyntaxErrorException {
-        if (tokens.isEmpty()) {
-            throw new EOFNotExpectedException(STRING, FALSE, TRUE, INT, REAL);
-        }
+        EOFNotExpectedException.throwIfEmpty(tokens, TRUE, FALSE, REAL, INT, STRING);
         Token token = tokens.peek();
         if (!token.thisLexameIs(TRUE.getVALUE())
                 && !token.thisLexameIs(FALSE.getVALUE())

@@ -27,7 +27,7 @@ public class ConstDeclaration {
         constConsumer(tokens);
 
         T.consumerTokenByLexame(tokens, SEMICOLON);
-
+        EOFNotExpectedException.throwIfEmpty(tokens, CLOSE_KEY);
         if (TypeDeclaration.typeChecker(tokens.peek())) {
             typedConstConsumer(tokens);
         }

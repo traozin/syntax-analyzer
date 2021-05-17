@@ -1,8 +1,6 @@
 package syntax.analyzer.model.grammar;
 
 import java.util.Deque;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
@@ -40,7 +38,6 @@ public class Program {
                     TYPEDEF,
                     STRUCT);
         }
-
         Token token = tokens.peek();
         if (token.thisLexameIs(FUNCTION.getVALUE())) {
             FunctionDeclaration.fullChecker(tokens);
@@ -52,6 +49,7 @@ public class Program {
             ConstDeclaration.fullChecker(tokens);
         } else if (token.thisLexameIs(PROCEDURE.getVALUE())) {
             token = tokens.pop();
+            EOFNotExpectedException.throwIfEmpty(tokens, START, IDENTIFIER);
             Token nextToken = tokens.peek();
             tokens.push(token);
             if (nextToken.thisLexameIs(START.getVALUE())) {

@@ -23,19 +23,17 @@ public class Print {
     }
 
     public static void expressionPrintConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-
         try {
             T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.STRING);
             try {
-                Token token = tokens.peek();
-                if (token.thisLexameIs(DOT.getVALUE())) {
+                if (T.testLexameBeforeConsume(tokens, DOT)) {
                     StructDeclaration.structUsageConsumer(tokens);
-                } else if (token.thisLexameIs(OPEN_BRACKET.getVALUE())) {
+                } else if (T.testLexameBeforeConsume(tokens, OPEN_BRACKET)) {
                     Arrays.dimensionConsumer(tokens);
-                } else if (token.thisLexameIs(COMMA.getVALUE())) {
+                } else if (T.testLexameBeforeConsume(tokens, COMMA)) {
                     morePrints(tokens);
                 } else {
-                    throw new SyntaxErrorException(token.getLexame(), DOT, OPEN_BRACKET, COMMA);
+                    throw new SyntaxErrorException(tokens.peek().getLexame(), DOT, OPEN_BRACKET, COMMA);
                 }
             } catch (SyntaxErrorException e) {
                 if (!e.getSyntaticalError().thisLexameIs(CLOSE_PARENTHESES.getVALUE())) {
@@ -45,7 +43,7 @@ public class Print {
 
         } catch (SyntaxErrorException e) {
             T.consumerTokenByType(tokens, TokenType.STRING, Terminals.STRING);
-            if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
+            if (T.testLexameBeforeConsume(tokens, COMMA)) {
                 morePrints(tokens);
             }
         }

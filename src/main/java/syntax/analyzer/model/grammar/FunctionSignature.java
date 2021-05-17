@@ -19,10 +19,10 @@ public class FunctionSignature {
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         typedIdentifier(tokens);
         T.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
-        Token token = tokens.peek();
-        if (!token.thisLexameIs(CLOSE_PARENTHESES.getVALUE())) {
+        
+        if (!T.testLexameBeforeConsume(tokens, CLOSE_PARENTHESES)) {
             try {
-                if (token.getType() == TokenType.IDENTIFIER) {
+                if (tokens.peek().getType() == TokenType.IDENTIFIER) {
                     idListChecker(tokens);
                 } else {
                     paramsChecker(tokens);
@@ -37,7 +37,7 @@ public class FunctionSignature {
 
     public static void paramsChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         typedIdentifier(tokens);
-        if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
+        if (T.testLexameBeforeConsume(tokens, COMMA)) {
             T.consumerToken(tokens);
             paramsChecker(tokens);
         }
@@ -56,7 +56,7 @@ public class FunctionSignature {
     //todo melhorar
     public static void idListChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-        if (tokens.peek().thisLexameIs(COMMA.getVALUE())) {
+        if (T.testLexameBeforeConsume(tokens, COMMA)) {
             T.consumerToken(tokens);
             idListChecker(tokens);
         }

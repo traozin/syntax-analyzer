@@ -5,7 +5,6 @@ import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
-import syntax.analyzer.model.grammar.Arrays;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
 import syntax.analyzer.util.T;
@@ -28,7 +27,7 @@ public class VarDeclaration {
         variableConsumer(tokens);
 
         T.consumerTokenByLexame(tokens, SEMICOLON);
-
+        EOFNotExpectedException.throwIfEmpty(tokens, CLOSE_KEY);
         if (TypeDeclaration.typeChecker(tokens.peek())) {
             typedVariableConsumer(tokens);
         }
@@ -56,6 +55,7 @@ public class VarDeclaration {
     public static void variableDeclaratorConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         if (!T.testLexameBeforeConsume(tokens, SEMICOLON) && !T.testLexameBeforeConsume(tokens, COMMA)) {
             T.consumerTokenByLexame(tokens, EQUALS);
+            EOFNotExpectedException.throwIfEmpty(tokens, IDENTIFIER, LOCAL, GLOBAL, REAL, INT, TRUE, FALSE);
             Token token = tokens.peek();
 
             if (T.testTypeBeforeConsume(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER)
@@ -64,13 +64,7 @@ public class VarDeclaration {
                     || token.thisLexameIs(GLOBAL.getVALUE())) {
 
                 token = tokens.pop();
-                if (tokens.isEmpty()) {
-                    throw new EOFNotExpectedException(IDENTIFIER,
-                            EXPRESSION,
-                            DOT,
-                            GLOBAL,
-                            LOCAL);
-                }
+                EOFNotExpectedException.throwIfEmpty(tokens, IDENTIFIER, LOCAL, GLOBAL, DOT, EXPRESSION);
                 Token nextToken = tokens.peek();
                 tokens.push(token);
                 if (token.thisLexameIs(GLOBAL.getVALUE())
@@ -93,7 +87,6 @@ public class VarDeclaration {
         }
     }
 
-    
     public static void varArgsConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TypeDeclaration.primaryConsumer(tokens);
         if (T.testLexameBeforeConsume(tokens, COMMA)) {

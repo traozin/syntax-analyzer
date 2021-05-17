@@ -19,15 +19,14 @@ public class StructDeclaration {
 
         T.consumerTokenByLexame(tokens, TYPEDEF, STRUCT);
 
-        Token token = tokens.peek();
-        if (token.thisLexameIs(OPEN_KEY.getVALUE())) {
-            T.consumerTokenByLexame(tokens, OPEN_KEY);
-        } else if (token.thisLexameIs(EXTENDS.getVALUE())) {
-            T.consumerTokenByLexame(tokens, EXTENDS);
+        if (T.testLexameBeforeConsume(tokens, OPEN_KEY)) {
+            T.consumerToken(tokens);
+        } else if (T.testLexameBeforeConsume(tokens, EXTENDS)) {
+            T.consumerToken(tokens);
             T.consumerTokenByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
             T.consumerTokenByLexame(tokens, OPEN_KEY);
         } else {
-            throw new SyntaxErrorException(token.getLexame(), OPEN_KEY, EXTENDS);
+            throw new SyntaxErrorException(tokens.peek().getLexame(), OPEN_KEY, EXTENDS);
         }
         structDefConsumer(tokens);
         T.consumerTokenByLexame(tokens, CLOSE_KEY);
@@ -37,10 +36,13 @@ public class StructDeclaration {
     }
 
     public static void structDefConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        Token token = tokens.peek();
-        VarDeclaration.fullChecker(tokens);
-
-        if (token.thisLexameIs(VAR.getVALUE()) || token.thisLexameIs(CONST.getVALUE())) {
+        try {
+            VarDeclaration.fullChecker(tokens);
+        } catch (SyntaxErrorException e) {
+            ConstDeclaration.fullChecker(tokens);
+        }
+        EOFNotExpectedException.throwIfEmpty(tokens, CLOSE_KEY);
+        if (T.testLexameBeforeConsume(tokens, VAR) || T.testLexameBeforeConsume(tokens, CONST)) {
             structDefConsumer(tokens);
         }
     }
