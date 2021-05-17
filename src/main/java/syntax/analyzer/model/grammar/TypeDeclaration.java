@@ -4,6 +4,7 @@ import java.util.Deque;
 import java.util.List;
 import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
+import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
@@ -59,6 +60,20 @@ public class TypeDeclaration {
 
     public static boolean scalarChecker(Token token) {
         return token.thisLexameIs(REAL.getVALUE()) || token.thisLexameIs(INT.getVALUE());
+    }
+
+    public static void literalConsumer(Deque<Token> tokens) throws EOFNotExpectedException, SyntaxErrorException {
+        if (tokens.isEmpty()) {
+            throw new EOFNotExpectedException(STRING, FALSE, TRUE, INT, REAL);
+        }
+        Token token = tokens.peek();
+        if (!token.thisLexameIs(TRUE.getVALUE())
+                && !token.thisLexameIs(FALSE.getVALUE())
+                && token.getType() != TokenType.NUMBER
+                && token.getType() != TokenType.STRING) {
+            throw new SyntaxErrorException(token.getLexame(), TRUE, FALSE, STRING, INT, REAL);
+        }
+        T.consumerToken(tokens);
     }
 
 }

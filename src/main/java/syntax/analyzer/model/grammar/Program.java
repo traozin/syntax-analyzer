@@ -1,11 +1,12 @@
 package syntax.analyzer.model.grammar;
 
 import java.util.Deque;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
-import static syntax.analyzer.util.Terminals.PROCEDURE;
-import static syntax.analyzer.util.Terminals.START;
+import static syntax.analyzer.util.Terminals.*;
 
 /**
  * TODO: testar struct, procedure, function, const e var
@@ -19,39 +20,44 @@ public class Program {
     }
 
     public static void globalStatementsList(Deque<Token> tokens) throws EOFNotExpectedException {
-        globalStatementsConsumer(tokens);
-        if (!tokens.isEmpty()) {
-            globalStatementsList(tokens);
+        try {
+            globalStatementsConsumer(tokens);
+            if (!tokens.isEmpty()) {
+                globalStatementsList(tokens);
+            }
+        } catch (SyntaxErrorException ex) {
+            System.out.println(ex.getSyntaticalError());
         }
     }
 
-    public static void globalStatementsConsumer(Deque<Token> tokens) throws EOFNotExpectedException {
-        try {
+    public static void globalStatementsConsumer(Deque<Token> tokens) throws EOFNotExpectedException, SyntaxErrorException {
+        if (tokens.isEmpty()) {
+            throw new EOFNotExpectedException(
+                    VAR,
+                    CONST,
+                    FUNCTION,
+                    PROCEDURE,
+                    TYPEDEF,
+                    STRUCT);
+        }
+
+        Token token = tokens.peek();
+        if (token.thisLexameIs(FUNCTION.getVALUE())) {
             FunctionDeclaration.fullChecker(tokens);
-        } catch (SyntaxErrorException e1) {
-            try {
-                StructDeclaration.fullChecker(tokens);
-            } catch (SyntaxErrorException ex) {
-                try {
-                    VarDeclaration.fullChecker(tokens);
-                } catch (SyntaxErrorException e) {
-                    try {
-                        Token token = tokens.pop();
-                        Token nextToken = tokens.peek();
-
-                        tokens.push(token);
-
-                        if (token.thisLexameIs(PROCEDURE.getVALUE())) {
-                            if (nextToken.thisLexameIs(START.getVALUE())) {
-                                ProcedureMain.fullChecker(tokens);
-                            } else {
-                                ProcedureDeclaration.fullChecker(tokens);
-                            }
-                        }
-                    } catch (SyntaxErrorException ex1) {
-                        System.out.println(e.getSyntaticalError());
-                    }
-                }
+        } else if (token.thisLexameIs(TYPEDEF.getVALUE())) {
+            StructDeclaration.fullChecker(tokens);
+        } else if (token.thisLexameIs(VAR.getVALUE())) {
+            VarDeclaration.fullChecker(tokens);
+        } else if (token.thisLexameIs(CONST.getVALUE())) {
+            ConstDeclaration.fullChecker(tokens);
+        } else if (token.thisLexameIs(PROCEDURE.getVALUE())) {
+            token = tokens.pop();
+            Token nextToken = tokens.peek();
+            tokens.push(token);
+            if (nextToken.thisLexameIs(START.getVALUE())) {
+                ProcedureMain.fullChecker(tokens);
+            } else {
+                ProcedureDeclaration.fullChecker(tokens);
             }
         }
     }

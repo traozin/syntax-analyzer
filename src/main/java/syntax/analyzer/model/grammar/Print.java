@@ -16,13 +16,10 @@ import syntax.analyzer.util.T;
 public class Print {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-
         T.consumerTokenByLexame(tokens, PRINT);
         T.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
         expressionPrintConsumer(tokens);
         T.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
-        T.consumerTokenByLexame(tokens, SEMICOLON);
-
     }
 
     public static void expressionPrintConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
@@ -34,7 +31,7 @@ public class Print {
                 if (token.thisLexameIs(DOT.getVALUE())) {
                     StructDeclaration.structUsageConsumer(tokens);
                 } else if (token.thisLexameIs(OPEN_BRACKET.getVALUE())) {
-                    VarDeclaration.arraysDimensionConsumer(tokens);
+                    Arrays.dimensionConsumer(tokens);
                 } else if (token.thisLexameIs(COMMA.getVALUE())) {
                     morePrints(tokens);
                 } else {

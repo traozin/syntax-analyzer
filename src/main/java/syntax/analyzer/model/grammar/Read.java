@@ -20,7 +20,6 @@ public class Read {
         T.consumerTokenByLexame(tokens, OPEN_PARENTHESES);
         expressionReadConsumer(tokens);
         T.consumerTokenByLexame(tokens, CLOSE_PARENTHESES);
-        T.consumerTokenByLexame(tokens, SEMICOLON);
     }
 
     public static void expressionReadConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
@@ -30,7 +29,7 @@ public class Read {
             if (token.thisLexameIs(DOT.getVALUE())) {
                 StructDeclaration.structUsageConsumer(tokens);
             } else if (token.thisLexameIs(OPEN_BRACKET.getVALUE())) {
-                VarDeclaration.arraysDimensionConsumer(tokens);
+                Arrays.dimensionConsumer(tokens);
             } else if (token.thisLexameIs(COMMA.getVALUE())) {
                 moreReadings(tokens);
             } else {
