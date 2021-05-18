@@ -34,7 +34,7 @@ public class SyntaticalError extends Token {
     @Override
     public String toString() {
         return new StringBuilder()
-                .append(" ERRO SINTÁTICO, NA LINHA: ")
+                .append("ERRO SINTÁTICO, NA LINHA: ")
                 .append(lexame.getLine())
                 .append(" FOI ENCONTRADO UM: \'")
                 .append(lexame.getLexame())

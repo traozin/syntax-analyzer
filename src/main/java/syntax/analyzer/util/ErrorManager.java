@@ -43,14 +43,14 @@ public class ErrorManager {
     }
 
     public static void consumer(Deque<Token> tokens) {
+        unexpectedToken.add("TOKEN INESPERADO: \""
+                + tokens.peek().getLexame().getLexame()
+                + "\" NA LINHA: " + tokens.peek().getLexame().getLine());
         TokenUtil.consumer(tokens);
     }
 
     public static void findNext(Deque<Token> tokens, Terminals terminal) throws EOFNotExpectedException {
         if (!TokenUtil.testLexameBeforeConsume(tokens, terminal)) {
-            unexpectedToken.add("TOKEN INESPERADO: \""
-                    + tokens.peek().getLexame().getLexame()
-                    + "\" NA LINHA: " + tokens.peek().getLexame().getLine());
             consumer(tokens);
             findNext(tokens, terminal);
         }
@@ -79,6 +79,12 @@ public class ErrorManager {
 
     public static void setEOF(EOFNotExpectedException ex) {
         E = ex;
+    }
+
+    public static void clear() {
+        ERRORS.clear();
+        E = null;
+        unexpectedToken.clear();
     }
 
 }

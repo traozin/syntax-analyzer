@@ -21,8 +21,7 @@ public class SyntaxAnalyzer {
             ArrayDeque<Token> tokens = code.getTokens()
                     .stream()
                     .filter(token -> !token.isError())
-                    .filter(token -> token.getType() != BLOCK_COMMENT
-                    || token.getType() != LINE_COMMENT)
+                    .filter(token -> token.getType() != BLOCK_COMMENT && token.getType() != LINE_COMMENT)
                     .collect(toCollection(ArrayDeque::new));
 
             Program.fullChecker(tokens);

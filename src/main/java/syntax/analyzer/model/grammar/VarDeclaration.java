@@ -48,7 +48,7 @@ public class VarDeclaration {
             TokenUtil.consumer(tokens);
             variableConsumer(tokens);
         } else if (!TokenUtil.testLexameBeforeConsume(tokens, SEMICOLON)) {
-            throw new SyntaxErrorException(tokens.peek().getLexame(), EQUALS, OPEN_BRACKET);
+            throw new SyntaxErrorException(tokens.peek().getLexame(), EQUALS, OPEN_BRACKET, SEMICOLON);
         }
     }
 
