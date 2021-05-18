@@ -5,6 +5,7 @@ import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
+import syntax.analyzer.util.ErrorManager;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
 import syntax.analyzer.util.TokenUtil;
@@ -23,6 +24,7 @@ public class FunctionDeclaration {
         try {
             TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
         } catch (SyntaxErrorException e) {
+
             FunctionSignature.paramsChecker(tokens);
             TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
         }
@@ -92,6 +94,9 @@ public class FunctionDeclaration {
         argConsumer(tokens);
         if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
             TokenUtil.consumer(tokens);
+            argsListConsumer(tokens);
+        } else if (TypeDeclaration.primaryChecker(tokens.peek())) {
+            ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), COMMA, CLOSE_PARENTHESES));
             argsListConsumer(tokens);
         }
     }

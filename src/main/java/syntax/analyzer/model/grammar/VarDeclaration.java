@@ -23,24 +23,41 @@ public class VarDeclaration {
             typedVariableConsumer(tokens);
             TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
         } catch (SyntaxErrorException e) {
-            ErrorManager.findNext(tokens, SEMICOLON);
-            ErrorManager.consumer(tokens);
-            Token token = tokens.peek();
-            if (TypeDeclaration.typeChecker(token)) {
-                typedVariableConsumer(tokens);
-                TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
-            } else if (token.thisLexameIs(CLOSE_KEY.getVALUE())) {
+            if (TokenUtil.testLexameBeforeConsume(tokens, CLOSE_KEY)) {
+                ErrorManager.addNewInternalError(e.getSyntaticalError()
+                        .toString()
+                        .contains(GLOBAL.getVALUE())
+                        ? new SyntaxErrorException(tokens.peek().getLexame(),
+                                EQUALS,
+                                OPEN_BRACKET,
+                                SEMICOLON)
+                        : e);
                 TokenUtil.consumer(tokens);
-            } else {
-                throw e;
             }
         }
     }
 
     public static void typedVariableConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TypeDeclaration.typeConsumer(tokens);
-        variableConsumer(tokens);
-        TokenUtil.consumerByLexame(tokens, SEMICOLON);
+        try {
+            variableConsumer(tokens);
+            TokenUtil.consumerByLexame(tokens, SEMICOLON);
+        } catch (SyntaxErrorException e) {
+            EOFNotExpectedException.throwIfEmpty(tokens, CLOSE_KEY);
+            if (TypeDeclaration.typeChecker(tokens.peek())) {
+                ErrorManager.addNewInternalError(e.getSyntaticalError()
+                        .toString()
+                        .contains(GLOBAL.getVALUE())
+                        ? new SyntaxErrorException(tokens.peek().getLexame(),
+                                EQUALS,
+                                OPEN_BRACKET,
+                                SEMICOLON)
+                        : e);
+                typedVariableConsumer(tokens);
+            } else {
+                throw e;
+            }
+        }
         EOFNotExpectedException.throwIfEmpty(tokens, CLOSE_KEY);
         if (TypeDeclaration.typeChecker(tokens.peek())) {
             typedVariableConsumer(tokens);
@@ -60,6 +77,9 @@ public class VarDeclaration {
         }
         if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
             TokenUtil.consumer(tokens);
+            variableConsumer(tokens);
+        } else if (TokenUtil.testTypeBeforeConsume(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER)) {
+            ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), COMMA, SEMICOLON));
             variableConsumer(tokens);
         } else if (!TokenUtil.testLexameBeforeConsume(tokens, SEMICOLON)) {
             throw new SyntaxErrorException(tokens.peek().getLexame(), EQUALS, OPEN_BRACKET, SEMICOLON);
@@ -103,8 +123,12 @@ public class VarDeclaration {
 
     public static void varArgsConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TypeDeclaration.primaryConsumer(tokens);
+        EOFNotExpectedException.throwIfEmpty(tokens, COMMA, CLOSE_PARENTHESES);
         if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
             TokenUtil.consumer(tokens);
+            varArgsConsumer(tokens);
+        } else if (TypeDeclaration.primaryChecker(tokens.peek())) {
+            ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), COMMA, CLOSE_PARENTHESES));
             varArgsConsumer(tokens);
         }
     }

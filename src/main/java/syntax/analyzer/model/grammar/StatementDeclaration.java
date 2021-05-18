@@ -18,7 +18,12 @@ public class StatementDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws EOFNotExpectedException {
         try {
-            TokenUtil.consumerByLexame(tokens, OPEN_KEY);
+            try {
+                TokenUtil.consumerByLexame(tokens, OPEN_KEY);
+            } catch (SyntaxErrorException e) {
+                ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), OPEN_KEY));
+                simpleStatement(tokens);
+            }
             statementListChecker(tokens);
             TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
         } catch (SyntaxErrorException e) {

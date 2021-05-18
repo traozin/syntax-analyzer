@@ -1,6 +1,5 @@
 package syntax.analyzer.util;
 
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +42,7 @@ public class ErrorManager {
         }
     }
 
+    
     public static void consumer(Deque<Token> tokens) {
         unexpectedToken.add("TOKEN INESPERADO: \""
                 + tokens.peek().getLexame().getLexame()

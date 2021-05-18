@@ -46,10 +46,10 @@ public class TypeDeclaration {
     }
 
     public static void typeConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        EOFNotExpectedException.throwIfEmpty(tokens, BOOLEAN, IDENTIFIER, REAL, STRING, INT);
+        EOFNotExpectedException.throwIfEmpty(tokens, BOOLEAN, REAL, STRING, INT);
         Token token = tokens.peek();
         if (!typeChecker(token)) {
-            throw new SyntaxErrorException(token.getLexame(), BOOLEAN, IDENTIFIER, STRING, INT, REAL);
+            throw new SyntaxErrorException(token.getLexame(), BOOLEAN, STRING, INT, REAL);
         }
         TokenUtil.consumer(tokens);
     }
