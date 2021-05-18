@@ -39,7 +39,6 @@ public class TokenUtil {
             tokens.push(token);
             throw new SyntaxErrorException(token.getLexame(), terminal);
         }
-        System.out.println(token);
     }
 
     public static void consumerByType(Deque<Token> tokens, TokenType tokenType, Terminals terminal) throws SyntaxErrorException, EOFNotExpectedException {
@@ -50,7 +49,6 @@ public class TokenUtil {
             tokens.push(token);
             throw new SyntaxErrorException(token.getLexame(), terminal);
         }
-        System.out.println(token);
     }
 
     public static boolean contains(Token token, Terminals... terminals) {
@@ -60,7 +58,7 @@ public class TokenUtil {
     }
 
     public static void consumer(Deque<Token> tokens) {
-        System.out.println(tokens.pop());
+        tokens.pop();
     }
 
     public static void complete(Deque<Token> tokens, int pos) {

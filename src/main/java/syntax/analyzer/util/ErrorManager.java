@@ -1,7 +1,11 @@
 package syntax.analyzer.util;
 
 import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import static java.util.stream.Collectors.toList;
 import lexical.analyzer.model.Token;
+import syntax.analyzer.model.SyntaticalError;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.model.grammar.StatementDeclaration;
@@ -14,37 +18,67 @@ import static syntax.analyzer.util.Terminals.*;
  */
 public class ErrorManager {
 
+    private static List<SyntaxErrorException> ERRORS = new LinkedList();
+    private static List<String> unexpectedToken = new LinkedList();
+    private static EOFNotExpectedException E;
+
     public static void genericBlockConsumer(Deque<Token> tokens) throws EOFNotExpectedException {
-        Token token = tokens.pop();
+        ErrorManager.findNext(tokens, OPEN_KEY);
+        TokenUtil.consumer(tokens);
         try {
             VarDeclaration.typedVariableConsumer(tokens);
             findNext(tokens, CLOSE_KEY);
-            TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
-            System.out.println("typedvariable");
+            TokenUtil.consumer(tokens);
         } catch (SyntaxErrorException e) {
             try {
                 VarDeclaration.varArgsConsumer(tokens);
                 findNext(tokens, CLOSE_KEY);
-                TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
-                System.out.println("varargs");
+                TokenUtil.consumer(tokens);
             } catch (SyntaxErrorException e1) {
-                tokens.push(token);
-                StatementDeclaration.fullChecker(tokens);
-                System.out.println("statement");
+                StatementDeclaration.statementListChecker(tokens);
+                findNext(tokens, CLOSE_KEY);
+                TokenUtil.consumer(tokens);
             }
         }
     }
 
     public static void consumer(Deque<Token> tokens) {
-        System.out.print("Error:" );
         TokenUtil.consumer(tokens);
     }
 
     public static void findNext(Deque<Token> tokens, Terminals terminal) throws EOFNotExpectedException {
         if (!TokenUtil.testLexameBeforeConsume(tokens, terminal)) {
-            System.out.print("next ");
+            unexpectedToken.add("TOKEN INESPERADO: \""
+                    + tokens.peek().getLexame().getLexame()
+                    + "\" NA LINHA: " + tokens.peek().getLexame().getLine());
             consumer(tokens);
             findNext(tokens, terminal);
         }
     }
+
+    public static void addNewInternalError(SyntaxErrorException exception) {
+        ERRORS.add(exception);
+    }
+
+    public static List<String> getErrors() {
+        List<String> lines = ERRORS.stream()
+                .map(SyntaxErrorException::getSyntaticalError)
+                .map(SyntaticalError::toString)
+                .collect(toList());
+
+        if (!unexpectedToken.isEmpty()) {
+            lines.addAll(unexpectedToken);
+        }
+        if (E != null) {
+            lines.add(E.getMessage());
+        }
+        return lines.isEmpty()
+                ? List.of("NÃO FORAM ENCONTRADOS ERROS SINTATICOS!")
+                : lines;
+    }
+
+    public static void setEOF(EOFNotExpectedException ex) {
+        E = ex;
+    }
+
 }

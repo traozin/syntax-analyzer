@@ -54,7 +54,6 @@ public class FunctionDeclaration {
                     REAL,
                     INT);
         }
-        //TODO: Verificar se é uma chamada de função ou uma expressão.
         try {
 
             if (token.getType() == TokenType.IDENTIFIER

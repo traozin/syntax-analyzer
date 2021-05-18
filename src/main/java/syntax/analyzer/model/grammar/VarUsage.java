@@ -85,6 +85,8 @@ public class VarUsage {
                     }
                 }
             }
+        }else{
+            throw new SyntaxErrorException(tokens.peek().getLexame(), EQUALS, DOT, OPEN_BRACKET);
         }
     }
 }

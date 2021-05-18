@@ -7,8 +7,8 @@ import static lexical.analyzer.enums.TokenType.LINE_COMMENT;
 import lexical.analyzer.model.SourceCode;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
-import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import syntax.analyzer.model.grammar.Program;
+import syntax.analyzer.util.ErrorManager;
 
 /**
  *
@@ -24,10 +24,11 @@ public class SyntaxAnalyzer {
                     .filter(token -> token.getType() != BLOCK_COMMENT
                     || token.getType() != LINE_COMMENT)
                     .collect(toCollection(ArrayDeque::new));
+
             Program.fullChecker(tokens);
         } catch (EOFNotExpectedException ex) {
-            System.out.println(ex.getMessage());
-        } 
+            ErrorManager.setEOF(ex);
+        }
         return code;
     }
 }

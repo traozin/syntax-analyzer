@@ -2,6 +2,7 @@ package syntax.analyzer.model.exceptions;
 
 import java.util.Arrays;
 import java.util.Deque;
+import static java.util.stream.Collectors.joining;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.util.Terminals;
 
@@ -12,7 +13,11 @@ import syntax.analyzer.util.Terminals;
 public class EOFNotExpectedException extends Exception {
 
     public EOFNotExpectedException(Terminals... terminals) {
-        super("O arquivou terminou inesperadamente! O analisador esperava um: " + Arrays.toString(terminals));
+        super("O arquivou terminou inesperadamente! O analisador esperava um: " 
+                + Arrays.asList(terminals)
+                        .stream()
+                        .map(Terminals::getVALUE)
+                        .collect(joining("ou", "\"", "\"")));
     }
 
     public EOFNotExpectedException(Terminals terminal) {

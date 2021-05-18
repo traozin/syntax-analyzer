@@ -2,13 +2,18 @@ package syntax.analyzer.main;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import static java.util.stream.Collectors.toList;
 import lexical.analyzer.model.LexicalAnalyzer;
 import lexical.analyzer.model.SourceCode;
+import lexical.analyzer.model.Token;
 import lexical.analyzer.util.FilesUtil;
 import syntax.analyzer.model.SyntaxAnalyzer;
+import syntax.analyzer.util.ErrorManager;
 
 /**
  *
@@ -34,10 +39,18 @@ public class Main {
                                 .replaceAll("input", "output")
                                 .replaceAll("entrada", "saida"));
                         code.setPath(path);
-                        FilesUtil.write(code);
+
+                        List<String> lines = code.getTokens()
+                                .stream()
+                                .map(Token::toString)
+                                .collect(toList());
+
+                        lines.addAll(ErrorManager.getErrors());
+                        FilesUtil.write(path, lines);
                     });
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }

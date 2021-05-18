@@ -18,21 +18,11 @@ public class StatementDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws EOFNotExpectedException {
         try {
-            ErrorManager.findNext(tokens, OPEN_KEY);
-            statementConsumer(tokens);
-        } catch (SyntaxErrorException e) {
-            ErrorManager.findNext(tokens, CLOSE_KEY);
-            ErrorManager.consumer(tokens);
-        }
-    }
-
-    private static void statementConsumer(Deque<Token> tokens) throws EOFNotExpectedException, SyntaxErrorException {
-        TokenUtil.consumer(tokens);
-        try {
-            TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
-        } catch (SyntaxErrorException e) {
+            TokenUtil.consumerByLexame(tokens, OPEN_KEY);
             statementListChecker(tokens);
             TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
+        } catch (SyntaxErrorException e) {
+            ErrorManager.genericBlockConsumer(tokens);
         }
     }
 
@@ -85,7 +75,6 @@ public class StatementDeclaration {
                 Token t2 = tokens.peek();
                 tokens.push(t1);
                 if (t2.thisLexameIs(OPEN_PARENTHESES.getVALUE())) {
-                    System.out.println("entrei");
                     FunctionDeclaration.callFunctionConsumer(tokens);
                     TokenUtil.consumerByLexame(tokens, SEMICOLON);
                 } else {
@@ -93,13 +82,11 @@ public class StatementDeclaration {
                     VarUsage.fullChecker(tokens);
                     TokenUtil.consumerByLexame(tokens, SEMICOLON);
                 }
-            } else if(TokenUtil.testLexameBeforeConsume(tokens, OPEN_KEY)){
-                ErrorManager.genericBlockConsumer(tokens);
-            }else{
+            } else {
                 ErrorManager.consumer(tokens);
             }
         } catch (SyntaxErrorException e) {
-            System.out.println("qualquer coisa");
+            ErrorManager.addNewInternalError(e);
         }
 
     }

@@ -24,7 +24,7 @@ public class Print {
 
     public static void expressionPrintConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         try {
-            TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.STRING);
+            TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
             try {
                 if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
                     StructDeclaration.structUsageConsumer(tokens);

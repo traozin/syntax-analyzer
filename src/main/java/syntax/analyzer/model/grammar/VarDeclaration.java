@@ -13,7 +13,7 @@ import syntax.analyzer.util.TokenUtil;
  *
  * @author Antonio Neto e Uellington Damasceno
  */
- public class VarDeclaration {
+public class VarDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TokenUtil.consumerByLexame(tokens, VAR);

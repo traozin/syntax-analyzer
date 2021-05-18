@@ -101,16 +101,8 @@ public class Expressions {
             TokenUtil.consumerByLexame(tokens, EXCLAMATION);
             unaryExpression(tokens);
         } else {
-            objectExpression(tokens);
+            primaryExpressionConsumer(tokens);
         }
-    }
-
-    public static void objectExpression(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        methodExpressionConsumer(tokens);
-    }
-
-    public static void methodExpressionConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        primaryExpressionConsumer(tokens);
     }
 
     public static void primaryExpressionConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
