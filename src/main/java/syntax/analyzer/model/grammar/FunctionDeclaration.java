@@ -32,7 +32,11 @@ public class FunctionDeclaration {
     }
 
     public static void blockFunctionChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TokenUtil.consumerByLexame(tokens, OPEN_KEY);
+        try {
+            TokenUtil.consumerByLexame(tokens, OPEN_KEY);
+        } catch (SyntaxErrorException e) {
+            ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), OPEN_KEY));
+        }
         StatementDeclaration.statementListChecker(tokens);
         TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
     }

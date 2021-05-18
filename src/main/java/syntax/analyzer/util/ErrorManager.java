@@ -87,5 +87,4 @@ public class ErrorManager {
         E = null;
         unexpectedToken.clear();
     }
-
 }

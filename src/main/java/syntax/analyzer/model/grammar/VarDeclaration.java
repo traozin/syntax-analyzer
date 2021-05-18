@@ -18,7 +18,12 @@ public class VarDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TokenUtil.consumerByLexame(tokens, VAR);
-        TokenUtil.consumerByLexame(tokens, OPEN_KEY);
+        try {
+            TokenUtil.consumerByLexame(tokens, OPEN_KEY);
+        } catch (SyntaxErrorException e) {
+            ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), OPEN_KEY));
+        }
+        
         try {
             typedVariableConsumer(tokens);
             TokenUtil.consumerByLexame(tokens, CLOSE_KEY);

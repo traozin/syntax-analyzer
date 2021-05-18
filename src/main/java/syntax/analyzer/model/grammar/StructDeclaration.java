@@ -5,6 +5,7 @@ import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
+import syntax.analyzer.util.ErrorManager;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
 import syntax.analyzer.util.TokenUtil;
@@ -27,7 +28,7 @@ public class StructDeclaration {
             TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
             TokenUtil.consumerByLexame(tokens, OPEN_KEY);
         } else {
-            throw new SyntaxErrorException(tokens.peek().getLexame(), OPEN_KEY, EXTENDS);
+            ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(),  OPEN_KEY, EXTENDS));
         }
         structDefConsumer(tokens);
         TokenUtil.consumerByLexame(tokens, CLOSE_KEY);

@@ -6,6 +6,7 @@ import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
 import static syntax.analyzer.model.grammar.VarDeclaration.varArgsConsumer;
+import syntax.analyzer.util.ErrorManager;
 import syntax.analyzer.util.TokenUtil;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
@@ -34,7 +35,11 @@ public class Arrays {
     }
 
     public static void initialize(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TokenUtil.consumerByLexame(tokens, OPEN_KEY);
+        try {
+            TokenUtil.consumerByLexame(tokens, OPEN_KEY);
+        } catch (SyntaxErrorException e) {
+            ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), OPEN_KEY));
+        }
         varArgsConsumer(tokens);
         TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
     }
