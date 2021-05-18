@@ -4,12 +4,12 @@ para identificar os padrão estabelecidos por essas [regex](https://github.com/U
 e utiliza essa [grámatica](https://github.com/traozin/grammartica) para definir a ordem sintática dos tokens.
 
 ## Instalação
-Para executar o projeto através do terminal, digite o seguinte comando no diretorio
+Para executar o projeto através do terminal, digite o seguinte comando no diretório
 raiz do projeto: 
 
     mvn clean install
   
-Em seguida acesse a parta `target` e lá deverá conter um arquivo 
+Em seguida, acesse a pasta `target` e lá deverá conter um arquivo 
 `syntax-analyzer-1.0-SNAPSHOT-jar-with-dependencies.jar` que corresponde ao 
 executável do projeto.
 
@@ -21,8 +21,8 @@ Para iniciar o jar basta executar o seguinte comando:
  <summary>Deseja executar o projeto pelo netbeans?</summary>
  <br>
  <p>
- Para executar esse <i>software</i> é necessário clonar esse repositório é necesário
- `files` > `open project` > selecione o projeto > dê build.
+ Para executar esse <i>software</i> é necessário clonar esse repositório. Após isso, já no netbeans acesse aos menus: 
+ `files` > `open project` > selecione o projeto(no diretório onde foi salvo) > Abra o projeto > "Construa" o mesmo.
  </p>
  </details>
 
@@ -84,7 +84,7 @@ procedure start {
  produções.
  
  ### Tokens de sincronização
- O conjunto de tokens de sincronização vária de acordo com a produção que está
+ O conjunto de tokens de sincronização varia de acordo com a produção que está
  sendo consumida no momento. 
  
  Mas podemos observar que os token sincronizadores da produção `global statments` são
