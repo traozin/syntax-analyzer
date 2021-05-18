@@ -2,6 +2,7 @@ package syntax.analyzer.main;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,8 +22,9 @@ import syntax.analyzer.util.ErrorManager;
 public class Main {
 
     public static void main(String[] args) {
-        FilesUtil.createIfNotExists("./output");
+        boolean showLexicalToken = !(args.length > 0 && args[0].equals("-l"));
 
+        FilesUtil.createIfNotExists("./output");
         Pattern pattern = Pattern.compile(FilesUtil.regexInputFileFilter);
         try {
             FilesUtil.readAllFiles(Path.of("./input"), pattern)
@@ -38,12 +40,13 @@ public class Main {
                                 .replaceAll("input", "output")
                                 .replaceAll("entrada", "saida"));
                         code.setPath(path);
-
-                        List<String> lines = code.getTokens()
-                                .stream()
-                                .map(Token::toString)
-                                .collect(toList());
-
+                        List<String> lines = new LinkedList();
+                        if (showLexicalToken) {
+                            lines = code.getTokens()
+                                    .stream()
+                                    .map(Token::toString)
+                                    .collect(toList());
+                        }
                         lines.addAll(ErrorManager.getErrors());
                         FilesUtil.write(path, lines);
                         ErrorManager.clear();

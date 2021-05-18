@@ -17,9 +17,11 @@ public class SyntaxErrorException extends Exception {
 
     public SyntaxErrorException(Lexame lexame, Terminals... errors) {
         super();
-        this.error = new SyntaticalError(TokenType.ERROR_SYNTATICAL, lexame, Arrays.asList(errors).stream()
-                .map(Terminals::getVALUE)
-                .collect(toList()));
+        this.error = new SyntaticalError(TokenType.ERROR_SYNTATICAL, lexame,
+                Arrays.asList(errors)
+                        .stream()
+                        .map(Terminals::getVALUE)
+                        .collect(toList()));
     }
 
     public SyntaxErrorException(SyntaticalError error) {

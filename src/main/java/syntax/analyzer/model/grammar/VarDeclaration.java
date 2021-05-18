@@ -5,6 +5,7 @@ import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
+import syntax.analyzer.util.ErrorManager;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
 import syntax.analyzer.util.TokenUtil;
@@ -18,14 +19,27 @@ public class VarDeclaration {
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TokenUtil.consumerByLexame(tokens, VAR);
         TokenUtil.consumerByLexame(tokens, OPEN_KEY);
-        typedVariableConsumer(tokens);
-        TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
+        try {
+            typedVariableConsumer(tokens);
+            TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
+        } catch (SyntaxErrorException e) {
+            ErrorManager.findNext(tokens, SEMICOLON);
+            ErrorManager.consumer(tokens);
+            Token token = tokens.peek();
+            if (TypeDeclaration.typeChecker(token)) {
+                typedVariableConsumer(tokens);
+                TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
+            } else if (token.thisLexameIs(CLOSE_KEY.getVALUE())) {
+                TokenUtil.consumer(tokens);
+            } else {
+                throw e;
+            }
+        }
     }
 
     public static void typedVariableConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TypeDeclaration.typeConsumer(tokens);
         variableConsumer(tokens);
-
         TokenUtil.consumerByLexame(tokens, SEMICOLON);
         EOFNotExpectedException.throwIfEmpty(tokens, CLOSE_KEY);
         if (TypeDeclaration.typeChecker(tokens.peek())) {
