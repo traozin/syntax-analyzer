@@ -56,7 +56,7 @@ public class TypeDeclaration {
 
     public static boolean typeChecker(Token token) {
         return token.thisLexameIs(BOOLEAN.getVALUE())
-                || token.thisLexameIs(Terminals.STRING.getVALUE())
+                || token.thisLexameIs(STRING.getVALUE())
                 || scalarChecker(token);
     }
 

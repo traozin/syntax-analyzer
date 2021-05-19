@@ -1,0 +1,54 @@
+/*
+    Declaração e uso de funções e procedimentos
+    COM ERROS.
+*/
+
+rocedure consume(int i){ //procedure escrito errado. Token de sincronização "{".
+    if(i > 0){ // Falta o then
+        print(i);
+    }else{
+        i = i + 10;
+        print(i);
+    }
+}
+
+procedure consumeByType(string token, string type) // Falta abertura
+   if(i > 0 && i < 5)then{
+        while(i < 5){
+            print(i);
+            i = i + 10;
+        }
+    }else{
+        i = i + 10;
+        print(i);
+    }
+}
+
+procedure consumeByLexame(string token, string laxame){
+    read(token);
+    var{
+        string anotherToken = "another" // falta o ponto e virgula
+    }
+
+    if(token == anotherToken)then{
+        print("Equals");
+    }else{
+        if(token != anotherToken)then{
+            print("!Equals");
+        }else{
+            while(true){
+                print("HI!");
+            }
+        }
+    }
+}
+
+functio boolean isEmpty(string stack){
+    return 1+1+1+2==3;
+}
+
+procedure start{
+    var{
+        boolean isEmpty = isEmpty();
+    }
+}

@@ -61,7 +61,6 @@ public class Program {
                 ErrorManager.consumer(tokens);
             }
         } catch (SyntaxErrorException e1) {
-            System.out.println(e1.getSyntaticalError());
             ErrorManager.addNewInternalError(e1);
         }
     }

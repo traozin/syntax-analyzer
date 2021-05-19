@@ -5,6 +5,7 @@ import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
+import syntax.analyzer.util.ErrorManager;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
 import syntax.analyzer.util.TokenUtil;
@@ -42,7 +43,12 @@ public class Print {
             }
 
         } catch (SyntaxErrorException e) {
-            TokenUtil.consumerByType(tokens, TokenType.STRING, Terminals.STRING);
+            try {
+                TokenUtil.consumerByType(tokens, TokenType.STRING, Terminals.STRING);
+            } catch (SyntaxErrorException e1) {
+                ErrorManager.addNewInternalError(new SyntaxErrorException(
+                        tokens.peek().getLexame(), STRING, IDENTIFIER));
+            }
             if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
                 morePrints(tokens);
             }

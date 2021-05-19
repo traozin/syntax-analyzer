@@ -1,0 +1,60 @@
+/*
+    Declaração e uso de váriaveis de variáveis e contantes.
+*/
+
+var{
+    int a;
+    int b, c;
+    int d = 0, e = 0;
+    int f, g = 0;
+    string h = "letra h", i = "letra i";
+    boolean isTrue = true;
+    boolean isFalse = false;
+}
+
+const{
+    real PI = 3.14;
+    string hello = "HELLO", world = "WORLD";
+    string exclamation = "!";
+    boolean isNotFalse = false;
+    boolean isNotTrue = false, isEmpty = false;
+}
+
+procedure start{
+    var{
+        int a;
+        int b, c;
+        int d = 0, e = 0;
+        int f, g = 0;
+        string h = "letra h", i = "letra i";
+        boolean isTrue = true;
+        boolean isFalse = false;
+        int numbers[5] = {0, 1, 2, 3, 4, 5} ;
+        string letters[5] = {"a", "b", "c", "d"};
+    }
+
+    const{
+        real PI = 3.14;
+        string hello = "HELLO", world = "WORLD";
+        string exclamation = "!";
+        boolean isNotFalse = false;
+        boolean isNotTrue = false, isEmpty = false;
+    }
+
+    local.a = 10;
+    local.b = local.c;
+    local.d = local.g;
+    global.a = local.a;
+
+    a = b;
+    b = c + d;
+
+}
+
+var {
+    boolean bellowMain = true;
+}
+
+const{
+    boolean isValid = true;
+}

@@ -1,0 +1,46 @@
+/*
+    Produções if-else, read, print, while
+    COM ERROS.
+    Token de sincronização: ;
+*/
+
+typedef struct{
+    var{
+        string path;
+        int lenght;
+    }
+}File;
+
+procedure start{
+    var{
+        string name;
+        int i, j, k;
+        boolean trueAndFalse[2] = {false, true};
+    }
+
+    read(name);
+    print(name);
+    print(10);//Aceita somente Identificadores e string.
+    print("10", "11", "12");
+    read();// Deveria ter algum identificador para leitura
+    read(File.name);
+    print(File.name);
+
+    print(trueAndFalse[1]);
+    if(name == "maria"){//falta o then
+        print("Oi Maria");
+    }else // falta a abertua de parentese.
+        print("Oi fulano");
+    }
+
+    while(i > k && j < i){
+        readi);//falta a abertura de parenteses.
+        read(j);
+        read(k);
+        if(i < k)then{
+            print("i < k");
+        }else{
+            print("i > k");
+        }  
+    }
+}

@@ -5,6 +5,7 @@ import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
+import syntax.analyzer.util.ErrorManager;
 import syntax.analyzer.util.Terminals;
 import static syntax.analyzer.util.Terminals.*;
 import syntax.analyzer.util.TokenUtil;
@@ -18,12 +19,18 @@ public class Read {
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TokenUtil.consumerByLexame(tokens, READ);
         TokenUtil.consumerByLexame(tokens, OPEN_PARENTHESES);
-        expressionReadConsumer(tokens);
-        TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
+        if (TokenUtil.testLexameBeforeConsume(tokens, CLOSE_PARENTHESES)) {
+            ErrorManager.addNewInternalError(
+                    new SyntaxErrorException(tokens.peek().getLexame(), IDENTIFIER));
+            TokenUtil.consumer(tokens);
+        } else {
+            expressionReadConsumer(tokens);
+            TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
+        }
     }
 
     public static void expressionReadConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.STRING);
+        TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
         try {
             if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
                 StructDeclaration.structUsageConsumer(tokens);

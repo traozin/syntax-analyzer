@@ -1,0 +1,103 @@
+/*
+    Todas as produções
+    Com erros
+*/
+
+procedure myPrint(string message) // falta abertura de parenteses
+    print(message);
+}
+
+fnction int sum(int a, int b){ //Function escrito errado
+    return a + b;
+}
+
+function real div(int a int b){// faltou uma virgula na separação dos params
+    if(b == 0){ // não tem o then;
+        return 0;
+    }else{
+        return a/b;
+    }
+}
+
+typedef struct{
+    var{
+        string fistName;
+        lastName; // faltou o tipo;
+        int old //faltou um ponto e virgula;
+    }
+    const;
+        string mother = "Maria";
+        string father = "João";
+    }
+}; //faltou o identificador da struct
+
+typedef struct extends Pessoa{
+    var{
+        int win;
+    }
+    var{
+        int loss;
+    }
+    var{
+        real total;
+    }
+    var{
+        username; // faltou o tipo
+        string password;
+    }
+}Gamer;
+
+procedure start // flatou a abertura de parenteses
+    read(Pessoa.firstName);
+    read(Pessoa.lastName);
+    read(Pessoa.old);
+    read(Gamer.win);
+    read(Gamer.loss);
+    read(); //abriu e fechou em ter algo para ler
+    var{
+        int loss = Gamer.loss;
+    }
+
+    Gamer.total = sum(2, 3);
+    const{
+        int total = 10;
+    }
+    total = Game.total;
+    myPrintX(total, 10);
+
+    if(total > loss)then{
+        print("show!");
+    }else{
+        var{
+            int i = 10;
+            boolean isTrue = true;
+        }
+        while(isTrue){
+            i = i < 2;
+            if(i <= 0) then {
+                isTrue = false;
+            }else{
+                print(isTrue);
+            }
+        }
+    }
+}
+
+procedure myPrintX(string message, int x){
+    while(x > 10){
+        print(message);
+        var {
+            int result = fact(x);
+        }
+        x = x + result;
+    //faltou o fechamento do parenteses
+}
+
+function int fact(int n){
+    var{
+        int first = fact(fact(fact(n)));
+        int second = fact(div(fact(n), 5));
+    }
+
+    return first + second;
+}

@@ -1,0 +1,40 @@
+/*
+    Declaração e consumo de structs
+    SEM ERROS.
+*/
+
+typedef struct{
+    var{
+        string name;
+        string cpf;
+    }
+}Pessoa;
+
+typedef struct extends Pessoa{
+    var{
+        int old;
+        string school;
+    }
+}Aluno;
+
+typedef struct{
+    const{
+        real PI = 3;
+        real g = 10;
+    }
+}Consts;
+
+procedure start{
+    var{
+        string names[2] = {"Fulano", "Detal"};
+        int old[1][1][1][1] = {1, 2, 3, 4};
+    }
+
+    Pessoa.name = "Fulano de tal";
+    Pessoa.cpf = "000000000";
+    Aluno.old = 10+10;
+    Aluno.school = "UEFS";
+
+    Aluno.name = names[2];
+    Pessoa.old = old[0][0][0][0];
+}

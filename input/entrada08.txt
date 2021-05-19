@@ -1,0 +1,102 @@
+/*
+    Todas as produções
+*/
+
+procedure myPrint(string message){
+    print(message);
+}
+
+function int sum(int a, int b){
+    return a + b;
+}
+
+function real div(int a, int b){
+    if(b == 0)then{
+        return 0;
+    }else{
+        return a/b;
+    }
+}
+
+typedef struct{
+    var{
+        string fistName, lastName;
+        int old;
+    }
+    const{
+        string mother = "Maria";
+        string father = "João";
+    }
+}Pessoa;
+
+typedef struct extends Pessoa{
+    var{
+        int win;
+    }
+    var{
+        int loss;
+    }
+    var{
+        real total;
+    }
+    var{
+        string username;
+        string password;
+    }
+}Gamer;
+
+procedure start{
+    read(Pessoa.firstName);
+    read(Pessoa.lastName);
+    read(Pessoa.old);
+    read(Gamer.win);
+    read(Gamer.loss);
+
+    var{
+        int loss = Gamer.loss;
+    }
+
+    Gamer.total = sum(2, 3);
+    const{
+        int total = 10;
+    }
+    total = Game.total;
+    myPrintX(total, 10);
+
+    if(total > loss)then{
+        print("show!");
+    }else{
+        var{
+            int i = 10;
+            boolean isTrue = true;
+        }
+        while(isTrue){
+            i = i < 2;
+            if(i <= 0) then {
+                isTrue = false;
+            }else{
+                print(isTrue);
+            }
+        }
+    }
+
+}
+
+procedure myPrintX(string message, int x){
+    while(x > 10){
+        print(message);
+        var {
+            int result = fact(x);
+        }
+        x = x + result;
+    }
+}
+
+function int fact(int n){
+    var{
+        int first = fact(fact(fact(n)));
+        int second = fact(div(fact(n), 5));
+    }
+
+    return first + second;
+}

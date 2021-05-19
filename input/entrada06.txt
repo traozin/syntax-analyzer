@@ -1,0 +1,44 @@
+/*
+    Produções if-else, read, print, while
+*/
+
+typedef struct{
+    var{
+        string path;
+        int lenght;
+    }
+}File;
+
+procedure start{
+    var{
+        string name;
+        int i, j, k;
+        boolean trueAndFalse[2] = {false, true};
+    }
+
+    read(name);
+    print(name);
+    print("10");
+    print("10", "11", "12");
+
+    read(File.name);
+    print(File.name);
+
+    print(trueAndFalse[1]);
+    if(name == "maria")then{
+        print("Oi Maria");
+    }else{
+        print("Oi fulano");
+    }
+
+    while(i > k && j < i){
+        read(i);
+        read(j);
+        read(k);
+        if(i < k)then{
+            print("i < k");
+        }else{
+            print("i > k");
+        }  
+    }
+}
