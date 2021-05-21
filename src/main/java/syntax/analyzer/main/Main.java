@@ -2,6 +2,7 @@ package syntax.analyzer.main;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,8 +23,9 @@ import syntax.analyzer.util.ErrorManager;
 public class Main {
 
     public static void main(String[] args) {
-        boolean showLexicalToken = !(args.length > 0 && args[0].equals("-l"));
-
+        boolean showLexicalToken = findFlag("-l", args);
+        boolean showUnexpectedToken = findFlag("-c", args);
+        
         FilesUtil.createIfNotExists("./output");
         Pattern pattern = Pattern.compile(FilesUtil.regexInputFileFilter);
         try {
@@ -47,13 +49,20 @@ public class Main {
                                     .map(Token::toString)
                                     .collect(toList());
                         }
-                        lines.addAll(ErrorManager.getErrors());
+                        lines.addAll(ErrorManager.getErrors(showUnexpectedToken));
                         FilesUtil.write(path, lines);
                         ErrorManager.clear();
                     });
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private static boolean findFlag(String flag, String... args) {
+        if (args.length > 0) {
+            return Arrays.asList(args).contains(flag);
+        }
+        return false;
     }
 
 }

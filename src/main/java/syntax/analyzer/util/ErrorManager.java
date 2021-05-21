@@ -57,17 +57,21 @@ public class ErrorManager {
         }
     }
 
-    public static void addNewInternalError(SyntaxErrorException exception) {
-        ERRORS.add(exception);
+    public static void addNewInternalError(Deque<Token> tokens, Terminals ... terminals) {
+        ERRORS.add(new SyntaxErrorException(tokens.peek().getLexame(), terminals));
+    }
+    
+    public static void addNewInternalError(SyntaxErrorException e) {
+        ERRORS.add(e);
     }
 
-    public static List<String> getErrors() {
+    public static List<String> getErrors(boolean showUnexpectedTokens) {
         List<String> lines = ERRORS.stream()
                 .map(SyntaxErrorException::getSyntaticalError)
                 .map(SyntaticalError::toString)
                 .collect(toList());
 
-        if (!unexpectedToken.isEmpty()) {
+        if (showUnexpectedTokens && !unexpectedToken.isEmpty()) {
             lines.addAll(unexpectedToken);
         }
         if (E != null) {

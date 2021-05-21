@@ -17,30 +17,26 @@ import static syntax.analyzer.util.Terminals.*;
  */
 public class Arrays {
 
-    public static void dimensionConsumer(Deque<Token> tokens) throws EOFNotExpectedException, SyntaxErrorException {
-        TokenUtil.consumerByLexame(tokens, OPEN_BRACKET);
+    public static void dimensionConsumer(Deque<Token> tokens) throws EOFNotExpectedException {
+        TokenUtil.consumer(tokens);
         try {
             TokenUtil.consumerByType(tokens, TokenType.NUMBER, Terminals.INT);
         } catch (SyntaxErrorException ex) {
             try {
                 TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
             } catch (SyntaxErrorException e) {
-                throw new SyntaxErrorException(tokens.peek().getLexame(), IDENTIFIER, INT);
+                ErrorManager.addNewInternalError(tokens, INT, IDENTIFIER);
             }
         }
-        TokenUtil.consumerByLexame(tokens, CLOSE_BRACKET);
-        if (TokenUtil.testLexameBeforeConsume(tokens, OPEN_BRACKET)){
+        TokenUtil.consumeExpectedTokenByLexame(tokens, CLOSE_BRACKET);
+        if (TokenUtil.testLexameBeforeConsume(tokens, OPEN_BRACKET)) {
             dimensionConsumer(tokens);
         }
     }
 
     public static void initialize(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        try {
-            TokenUtil.consumerByLexame(tokens, OPEN_KEY);
-        } catch (SyntaxErrorException e) {
-            ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), OPEN_KEY));
-        }
+        TokenUtil.consumeExpectedTokenByLexame(tokens, OPEN_KEY);
         varArgsConsumer(tokens);
-        TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
+        TokenUtil.consumeExpectedTokenByLexame(tokens, CLOSE_KEY);
     }
 }

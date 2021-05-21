@@ -17,11 +17,7 @@ import syntax.analyzer.util.TokenUtil;
 public class StatementDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws EOFNotExpectedException {
-        try {
-            TokenUtil.consumerByLexame(tokens, OPEN_KEY);
-        } catch (SyntaxErrorException e) {
-            ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), OPEN_KEY));
-        }
+        TokenUtil.consumeExpectedTokenByLexame(tokens, OPEN_KEY);
         try {
             statementListChecker(tokens);
             TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
@@ -54,10 +50,10 @@ public class StatementDeclaration {
         try {
             if (token.thisLexameIs(READ.getVALUE())) {
                 Read.fullChecker(tokens);
-                TokenUtil.consumerByLexame(tokens, SEMICOLON);
+                TokenUtil.consumeExpectedTokenByLexame(tokens, SEMICOLON);
             } else if (token.thisLexameIs(PRINT.getVALUE())) {
                 Print.fullChecker(tokens);
-                TokenUtil.consumerByLexame(tokens, SEMICOLON);
+                TokenUtil.consumeExpectedTokenByLexame(tokens, SEMICOLON);
             } else if (token.thisLexameIs(VAR.getVALUE())) {
                 VarDeclaration.fullChecker(tokens);
             } else if (token.thisLexameIs(CONST.getVALUE())) {
@@ -72,7 +68,7 @@ public class StatementDeclaration {
                 StructDeclaration.fullChecker(tokens);
             } else if (token.thisLexameIs(GLOBAL.getVALUE()) || token.thisLexameIs(LOCAL.getVALUE())) {
                 VarScope.fullChecker(tokens);
-                TokenUtil.consumerByLexame(tokens, SEMICOLON);
+                TokenUtil.consumeExpectedTokenByLexame(tokens, SEMICOLON);
             } else if (token.getType() == TokenType.IDENTIFIER) {
                 Token t1 = tokens.pop();
                 EOFNotExpectedException.throwIfEmpty(tokens, OPEN_PARENTHESES, IDENTIFIER);
@@ -80,13 +76,15 @@ public class StatementDeclaration {
                 tokens.push(t1);
                 if (t2.thisLexameIs(OPEN_PARENTHESES.getVALUE())) {
                     FunctionDeclaration.callFunctionConsumer(tokens);
-                    TokenUtil.consumerByLexame(tokens, SEMICOLON);
+                    TokenUtil.consumeExpectedTokenByLexame(tokens, SEMICOLON);
                 } else {
                     TokenUtil.consumer(tokens);
                     VarUsage.fullChecker(tokens);
-                    TokenUtil.consumerByLexame(tokens, SEMICOLON);
+                    TokenUtil.consumeExpectedTokenByLexame(tokens, SEMICOLON);
                 }
-            } else {
+            }
+            
+            else {
                 ErrorManager.consumer(tokens);
             }
         } catch (SyntaxErrorException e) {

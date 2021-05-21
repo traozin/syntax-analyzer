@@ -16,17 +16,22 @@ import syntax.analyzer.util.TokenUtil;
  */
 public class Print {
 
-    public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TokenUtil.consumerByLexame(tokens, PRINT);
-        TokenUtil.consumerByLexame(tokens, OPEN_PARENTHESES);
-        expressionPrintConsumer(tokens);
-        TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
+    public static void fullChecker(Deque<Token> tokens) throws EOFNotExpectedException {
+        TokenUtil.consumer(tokens);
+        TokenUtil.consumeExpectedTokenByLexame(tokens, OPEN_PARENTHESES);
+        if (TokenUtil.testLexameBeforeConsume(tokens, CLOSE_PARENTHESES)) {
+            ErrorManager.addNewInternalError(tokens, IDENTIFIER, STRING);
+            TokenUtil.consumer(tokens);
+        } else {
+            expressionPrintConsumer(tokens);
+        }
+        TokenUtil.consumeExpectedTokenByLexame(tokens, CLOSE_PARENTHESES);
     }
 
-    public static void expressionPrintConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
+    public static void expressionPrintConsumer(Deque<Token> tokens) throws EOFNotExpectedException {
         try {
             TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-            try {
+            if (!TokenUtil.testLexameBeforeConsume(tokens, CLOSE_PARENTHESES)) {
                 if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
                     StructDeclaration.structUsageConsumer(tokens);
                 } else if (TokenUtil.testLexameBeforeConsume(tokens, OPEN_BRACKET)) {
@@ -34,20 +39,17 @@ public class Print {
                 } else if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
                     morePrints(tokens);
                 } else {
-                    throw new SyntaxErrorException(tokens.peek().getLexame(), DOT, OPEN_BRACKET, COMMA);
-                }
-            } catch (SyntaxErrorException e) {
-                if (!e.getSyntaticalError().thisLexameIs(CLOSE_PARENTHESES.getVALUE())) {
-                    throw e;
+                    throw new SyntaxErrorException(tokens.peek().getLexame(), DOT, OPEN_BRACKET, COMMA, CLOSE_PARENTHESES);
                 }
             }
-
         } catch (SyntaxErrorException e) {
             try {
                 TokenUtil.consumerByType(tokens, TokenType.STRING, Terminals.STRING);
             } catch (SyntaxErrorException e1) {
-                ErrorManager.addNewInternalError(new SyntaxErrorException(
-                        tokens.peek().getLexame(), STRING, IDENTIFIER));
+                if (!tokens.peek().thisLexameIs(SEMICOLON.getVALUE())) {
+                    ErrorManager.addNewInternalError(tokens, STRING, IDENTIFIER, CLOSE_PARENTHESES);
+                    TokenUtil.consumer(tokens);
+                }
             }
             if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
                 morePrints(tokens);
@@ -55,8 +57,8 @@ public class Print {
         }
     }
 
-    public static void morePrints(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TokenUtil.consumerByLexame(tokens, COMMA);
+    public static void morePrints(Deque<Token> tokens) throws EOFNotExpectedException {
+        TokenUtil.consumer(tokens);
         expressionPrintConsumer(tokens);
     }
 }

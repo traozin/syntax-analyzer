@@ -77,4 +77,20 @@ public class TokenUtil {
         CHECKPOINTS.add(new ArrayDeque(tokens));
         return CHECKPOINTS.size() - 1;
     }
+    
+    public static void consumeExpectedTokenByLexame(Deque<Token> tokens, Terminals terminal) throws EOFNotExpectedException{
+        try {
+            TokenUtil.consumerByLexame(tokens, terminal);
+        } catch (SyntaxErrorException e) {
+            ErrorManager.addNewInternalError(tokens, terminal);
+        }
+    }
+    
+    public static void consumeExpectedTokenByType(Deque<Token> tokens,TokenType tokenType, Terminals terminal) throws EOFNotExpectedException{
+        try {
+            TokenUtil.consumerByType(tokens,tokenType, terminal);
+        } catch (SyntaxErrorException e) {
+            ErrorManager.addNewInternalError(tokens, terminal);
+        }
+    }
 }

@@ -16,16 +16,12 @@ import static syntax.analyzer.util.Terminals.*;
  */
 public class ConstDeclaration {
 
-    public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TokenUtil.consumerByLexame(tokens, CONST);
-        try {
-            TokenUtil.consumerByLexame(tokens, OPEN_KEY);
-        } catch (SyntaxErrorException e) {
-            ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), OPEN_KEY));
-        }
+    public static void fullChecker(Deque<Token> tokens) throws EOFNotExpectedException {
+        TokenUtil.consumer(tokens);
+        TokenUtil.consumeExpectedTokenByLexame(tokens, OPEN_KEY);
         try {
             typedConstConsumer(tokens);
-            TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
+            TokenUtil.consumeExpectedTokenByLexame(tokens, CLOSE_KEY);
         } catch (SyntaxErrorException e) {
             if (TokenUtil.testLexameBeforeConsume(tokens, CLOSE_KEY)) {
                 ErrorManager.addNewInternalError(e);
@@ -35,10 +31,15 @@ public class ConstDeclaration {
     }
 
     public static void typedConstConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TypeDeclaration.typeConsumer(tokens);
+        try {
+            TypeDeclaration.typeConsumer(tokens);
+        } catch (SyntaxErrorException e) {
+            ErrorManager.addNewInternalError(tokens, INT, REAL, STRING, BOOLEAN);
+            throw e;
+        }
         try {
             constConsumer(tokens);
-            TokenUtil.consumerByLexame(tokens, SEMICOLON);
+            TokenUtil.consumeExpectedTokenByLexame(tokens, SEMICOLON);
         } catch (SyntaxErrorException e) {
             EOFNotExpectedException.throwIfEmpty(tokens, CLOSE_KEY);
             if (TypeDeclaration.typeChecker(tokens.peek())) {
@@ -60,14 +61,14 @@ public class ConstDeclaration {
             TokenUtil.consumer(tokens);
             constConsumer(tokens);
         } else if (TokenUtil.testTypeBeforeConsume(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER)) {
-            ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), COMMA, SEMICOLON));
+            ErrorManager.addNewInternalError(tokens, COMMA, SEMICOLON);
             constConsumer(tokens);
         }
     }
 
     public static void constDeclarator(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-        TokenUtil.consumerByLexame(tokens, EQUALS);
+        TokenUtil.consumeExpectedTokenByLexame(tokens, EQUALS);
         TypeDeclaration.literalConsumer(tokens);
     }
 }

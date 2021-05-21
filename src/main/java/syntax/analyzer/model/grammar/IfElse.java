@@ -14,27 +14,25 @@ import syntax.analyzer.util.TokenUtil;
  */
 public class IfElse {
 
-    public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
+    public static void fullChecker(Deque<Token> tokens) throws EOFNotExpectedException {
         ifConsumer(tokens);
         elseConsumer(tokens);
     }
 
-    public static void ifConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TokenUtil.consumerByLexame(tokens, IF);
-        Expressions.fullChecker(tokens);
+    public static void ifConsumer(Deque<Token> tokens) throws EOFNotExpectedException {
+        TokenUtil.consumer(tokens);
         try {
-            TokenUtil.consumerByLexame(tokens, THEN);
+            Expressions.fullChecker(tokens);
         } catch (SyntaxErrorException e) {
-            ErrorManager.addNewInternalError(
-                    new SyntaxErrorException(tokens.peek().getLexame(),
-                            THEN));
+            ErrorManager.findNext(tokens, THEN);
         }
+        TokenUtil.consumeExpectedTokenByLexame(tokens, THEN);
         StatementDeclaration.fullChecker(tokens);
     }
 
-    public static void elseConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
+    public static void elseConsumer(Deque<Token> tokens) throws EOFNotExpectedException {
         if (TokenUtil.testLexameBeforeConsume(tokens, ELSE)) {
-            TokenUtil.consumerByLexame(tokens, ELSE);
+            TokenUtil.consumer(tokens);
             StatementDeclaration.fullChecker(tokens);
         }
     }

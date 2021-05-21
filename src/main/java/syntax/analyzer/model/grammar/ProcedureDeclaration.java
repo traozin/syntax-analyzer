@@ -16,17 +16,17 @@ import syntax.analyzer.util.TokenUtil;
 public class ProcedureDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TokenUtil.consumerByLexame(tokens, PROCEDURE);
+        TokenUtil.consumer(tokens);
 
         TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-        TokenUtil.consumerByLexame(tokens, OPEN_PARENTHESES);
+        TokenUtil.consumeExpectedTokenByLexame(tokens, OPEN_PARENTHESES);
+
         try {
             TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
         } catch (SyntaxErrorException e) {
             FunctionSignature.paramsChecker(tokens);
-            TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
+            TokenUtil.consumeExpectedTokenByLexame(tokens, CLOSE_PARENTHESES);
         }
         StatementDeclaration.fullChecker(tokens);
     }
-
 }

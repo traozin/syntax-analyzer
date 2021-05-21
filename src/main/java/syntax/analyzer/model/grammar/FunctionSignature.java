@@ -24,16 +24,14 @@ public class FunctionSignature {
                 TokenUtil.consumer(tokens);
                 paramsChecker(tokens);
             } else if (TypeDeclaration.primaryChecker(tokens.peek())) {
-                ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), COMMA, CLOSE_PARENTHESES));
+                ErrorManager.addNewInternalError(tokens, COMMA, CLOSE_PARENTHESES);
                 paramsChecker(tokens);
             }
         } catch (SyntaxErrorException e) {
             if (!TokenUtil.testLexameBeforeConsume(tokens, CLOSE_PARENTHESES)) {
                 throw e;
             } else {
-                ErrorManager.addNewInternalError(new SyntaxErrorException(tokens
-                        .peek()
-                        .getLexame(), IDENTIFIER));
+                ErrorManager.addNewInternalError(tokens, IDENTIFIER);
             }
         }
     }
@@ -50,7 +48,12 @@ public class FunctionSignature {
             TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
         } catch (SyntaxErrorException e) {
             if (TokenUtil.testTypeBeforeConsume(tokens, TokenType.IDENTIFIER, IDENTIFIER)) {
-                ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), INT, REAL, STRING, BOOLEAN));
+                ErrorManager.addNewInternalError(tokens, INT, REAL, STRING, BOOLEAN);
+                TokenUtil.consumer(tokens);
+            } else if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
+                ErrorManager.addNewInternalError(tokens, IDENTIFIER);
+                TokenUtil.consumer(tokens);
+                typedIdentifier(tokens);
             } else {
                 throw e;
             }

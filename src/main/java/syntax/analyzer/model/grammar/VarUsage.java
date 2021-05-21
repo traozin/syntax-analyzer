@@ -57,7 +57,7 @@ public class VarUsage {
             try {
                 TokenUtil.consumerByLexame(tokens, SEMICOLON);
             } catch (SyntaxErrorException e) {
-                TokenUtil.consumerByLexame(tokens, EQUALS);
+                TokenUtil.consumeExpectedTokenByLexame(tokens, EQUALS);
                 try {
                     VarScope.typedVariableScoped(tokens);
                     if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
@@ -69,7 +69,6 @@ public class VarUsage {
                     EOFNotExpectedException.throwIfEmpty(tokens, DOT, OPEN_BRACKET);
                     Token nextToken = tokens.peek();
                     tokens.push(token);
-
                     if (token.getType() == TokenType.IDENTIFIER
                             && nextToken.thisLexameIs(DOT.getVALUE())) {
                         TokenUtil.consumer(tokens);
@@ -85,7 +84,7 @@ public class VarUsage {
                     }
                 }
             }
-        }else{
+        } else {
             throw new SyntaxErrorException(tokens.peek().getLexame(), EQUALS, DOT, OPEN_BRACKET);
         }
     }

@@ -45,7 +45,7 @@ public class VarScope {
                 tokens.push(token);
                 if (nextNextToken.thisLexameIs(SEMICOLON.getVALUE())
                         || nextNextToken.thisLexameIs(OPEN_BRACKET.getVALUE())) {
-                    TokenUtil.consumerByLexame(tokens, EQUALS);
+                    TokenUtil.consumeExpectedTokenByLexame(tokens, EQUALS);
                     try {
                         VarScope.scopeModifierConsumer(tokens);
                         if (TokenUtil.testLexameBeforeConsume(tokens, OPEN_BRACKET)) {
@@ -81,7 +81,7 @@ public class VarScope {
 
     public static void typedVariableScoped(Deque<Token> tokens) throws EOFNotExpectedException, SyntaxErrorException {
         VarScope.scopeModifierConsumer(tokens);
-        TokenUtil.consumerByLexame(tokens, DOT);
+        TokenUtil.consumeExpectedTokenByLexame(tokens, DOT);
         TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
     }
 }

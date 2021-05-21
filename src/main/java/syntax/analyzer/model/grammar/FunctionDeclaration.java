@@ -18,31 +18,30 @@ public class FunctionDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TokenUtil.consumerByLexame(tokens, FUNCTION);
-        TypeDeclaration.typeConsumer(tokens);
-        TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-        TokenUtil.consumerByLexame(tokens, OPEN_PARENTHESES);
+        try {
+            TypeDeclaration.typeConsumer(tokens);
+        } catch (SyntaxErrorException e) {
+            ErrorManager.addNewInternalError(tokens, INT, REAL, STRING, BOOLEAN);
+        }
+        TokenUtil.consumeExpectedTokenByType(tokens, TokenType.IDENTIFIER,  Terminals.IDENTIFIER);
+        TokenUtil.consumeExpectedTokenByLexame(tokens, OPEN_PARENTHESES);
         try {
             TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
         } catch (SyntaxErrorException e) {
-
             FunctionSignature.paramsChecker(tokens);
-            TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
+            TokenUtil.consumeExpectedTokenByLexame(tokens, CLOSE_PARENTHESES);
         }
         blockFunctionChecker(tokens);
     }
 
     public static void blockFunctionChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        try {
-            TokenUtil.consumerByLexame(tokens, OPEN_KEY);
-        } catch (SyntaxErrorException e) {
-            ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), OPEN_KEY));
-        }
+        TokenUtil.consumeExpectedTokenByLexame(tokens, OPEN_KEY);
         StatementDeclaration.statementListChecker(tokens);
-        TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
+        TokenUtil.consumeExpectedTokenByLexame(tokens, CLOSE_KEY);
     }
 
-    public static void returnChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TokenUtil.consumerByLexame(tokens, Terminals.RETURN);
+    public static void returnChecker(Deque<Token> tokens) throws EOFNotExpectedException {
+        TokenUtil.consumer(tokens);
         Token token = tokens.pop();
         Token nextToken = tokens.peek();
         tokens.push(token);
@@ -51,7 +50,7 @@ public class FunctionDeclaration {
         boolean isPrimaryReturn = TypeDeclaration.primaryChecker(token);
 
         if (!isEmptyReturn && !isPrimaryReturn) {
-            throw new SyntaxErrorException(token.getLexame(),
+             ErrorManager.addNewInternalError(tokens,
                     SEMICOLON,
                     IDENTIFIER,
                     TRUE,
@@ -72,7 +71,7 @@ public class FunctionDeclaration {
                 Expressions.fullChecker(tokens);
             }
         } catch (SyntaxErrorException e) {
-            throw new SyntaxErrorException(tokens.peek().getLexame(),
+            ErrorManager.addNewInternalError(tokens,
                     SEMICOLON,
                     IDENTIFIER,
                     TRUE,
@@ -80,7 +79,7 @@ public class FunctionDeclaration {
                     STRING,
                     REAL);
         }
-        TokenUtil.consumerByLexame(tokens, Terminals.SEMICOLON);
+        TokenUtil.consumeExpectedTokenByLexame(tokens, SEMICOLON);
     }
 
     public static void callFunctionConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
@@ -90,7 +89,7 @@ public class FunctionDeclaration {
             TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
         } catch (SyntaxErrorException ex) {
             argsListConsumer(tokens);
-            TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
+            TokenUtil.consumeExpectedTokenByLexame(tokens, CLOSE_PARENTHESES);
         }
     }
 
@@ -100,7 +99,7 @@ public class FunctionDeclaration {
             TokenUtil.consumer(tokens);
             argsListConsumer(tokens);
         } else if (TypeDeclaration.primaryChecker(tokens.peek())) {
-            ErrorManager.addNewInternalError(new SyntaxErrorException(tokens.peek().getLexame(), COMMA, CLOSE_PARENTHESES));
+            ErrorManager.addNewInternalError(tokens, COMMA, CLOSE_PARENTHESES);
             argsListConsumer(tokens);
         }
     }
