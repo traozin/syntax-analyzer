@@ -23,9 +23,9 @@ import syntax.analyzer.util.ErrorManager;
 public class Main {
 
     public static void main(String[] args) {
-        boolean showLexicalToken = findFlag("-l", args);
-        boolean showUnexpectedToken = findFlag("-c", args);
-        
+        boolean showLexicalToken = Arrays.asList(args).contains("-l");
+        boolean showUnexpectedToken = Arrays.asList(args).contains("-c");
+
         FilesUtil.createIfNotExists("./output");
         Pattern pattern = Pattern.compile(FilesUtil.regexInputFileFilter);
         try {
@@ -57,12 +57,4 @@ public class Main {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    private static boolean findFlag(String flag, String... args) {
-        if (args.length > 0) {
-            return Arrays.asList(args).contains(flag);
-        }
-        return false;
-    }
-
 }

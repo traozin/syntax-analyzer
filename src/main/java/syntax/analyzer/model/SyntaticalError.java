@@ -1,6 +1,5 @@
 package syntax.analyzer.model;
 
-import java.util.LinkedList;
 import java.util.List;
 import static java.util.stream.Collectors.joining;
 import lexical.analyzer.enums.TokenType;
@@ -13,18 +12,7 @@ import lexical.analyzer.model.Token;
  */
 public class SyntaticalError extends Token {
 
-    private List<String> expectedTokens;
-
-    public SyntaticalError(TokenType type, Lexame lexame) {
-        super(type, lexame);
-        this.expectedTokens = new LinkedList();
-    }
-
-    public SyntaticalError(TokenType type, Lexame lexame, String expectedToken) {
-        super(type, lexame);
-        this.expectedTokens = new LinkedList();
-        this.expectedTokens.add(expectedToken);
-    }
+    private final List<String> expectedTokens;
 
     public SyntaticalError(TokenType type, Lexame lexame, List<String> expectedTokens) {
         super(type, lexame);

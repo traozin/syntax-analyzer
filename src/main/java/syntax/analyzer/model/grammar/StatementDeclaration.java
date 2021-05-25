@@ -18,12 +18,8 @@ public class StatementDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws EOFNotExpectedException {
         TokenUtil.consumeExpectedTokenByLexame(tokens, OPEN_KEY);
-        try {
-            statementListChecker(tokens);
-            TokenUtil.consumerByLexame(tokens, CLOSE_KEY);
-        } catch (SyntaxErrorException e) {
-            ErrorManager.genericBlockConsumer(tokens);
-        }
+        statementListChecker(tokens);
+        TokenUtil.consumeExpectedTokenByLexame(tokens, CLOSE_KEY);
     }
 
     public static void statementListChecker(Deque<Token> tokens) throws EOFNotExpectedException {
@@ -82,9 +78,7 @@ public class StatementDeclaration {
                     VarUsage.fullChecker(tokens);
                     TokenUtil.consumeExpectedTokenByLexame(tokens, SEMICOLON);
                 }
-            }
-            
-            else {
+            } else {
                 ErrorManager.consumer(tokens);
             }
         } catch (SyntaxErrorException e) {

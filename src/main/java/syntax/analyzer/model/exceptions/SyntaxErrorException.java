@@ -24,11 +24,6 @@ public class SyntaxErrorException extends Exception {
                         .collect(toList()));
     }
 
-    public SyntaxErrorException(SyntaticalError error) {
-        super();
-        this.error = error;
-    }
-
     public SyntaticalError getSyntaticalError() {
         return error;
     }

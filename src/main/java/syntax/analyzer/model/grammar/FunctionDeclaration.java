@@ -17,7 +17,7 @@ import syntax.analyzer.util.TokenUtil;
 public class FunctionDeclaration {
 
     public static void fullChecker(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TokenUtil.consumerByLexame(tokens, FUNCTION);
+        TokenUtil.consumer(tokens);
         try {
             TypeDeclaration.typeConsumer(tokens);
         } catch (SyntaxErrorException e) {
@@ -83,8 +83,8 @@ public class FunctionDeclaration {
     }
 
     public static void callFunctionConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
-        TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-        TokenUtil.consumerByLexame(tokens, OPEN_PARENTHESES);
+        TokenUtil.consumer(tokens);
+        TokenUtil.consumer(tokens);
         try {
             TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
         } catch (SyntaxErrorException ex) {
@@ -105,9 +105,10 @@ public class FunctionDeclaration {
     }
 
     public static void argConsumer(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
+        EOFNotExpectedException.throwIfEmpty(tokens, INT, REAL, STRING, BOOLEAN, IDENTIFIER);
         Token token = tokens.pop();
-        Token nextToken = tokens.pop();
-        tokens.push(nextToken);
+        EOFNotExpectedException.throwIfEmpty(tokens, OPEN_PARENTHESES, COMMA);
+        Token nextToken = tokens.peek();
         tokens.push(token);
 
         if (TypeDeclaration.primaryChecker(token)) {

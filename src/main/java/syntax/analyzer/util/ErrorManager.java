@@ -23,7 +23,6 @@ public class ErrorManager {
     private static EOFNotExpectedException E;
 
     public static void genericBlockConsumer(Deque<Token> tokens) throws EOFNotExpectedException {
-        ErrorManager.findNext(tokens, OPEN_KEY);
         TokenUtil.consumer(tokens);
         try {
             VarDeclaration.typedVariableConsumer(tokens);
@@ -50,7 +49,7 @@ public class ErrorManager {
         TokenUtil.consumer(tokens);
     }
 
-    public static void findNext(Deque<Token> tokens, Terminals terminal) throws EOFNotExpectedException {
+    private static void findNext(Deque<Token> tokens, Terminals terminal) throws EOFNotExpectedException {
         if (!TokenUtil.testLexameBeforeConsume(tokens, terminal)) {
             consumer(tokens);
             findNext(tokens, terminal);

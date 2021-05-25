@@ -1,12 +1,7 @@
 package syntax.analyzer.util;
 
-import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
-import static java.util.stream.Collectors.toCollection;
-import java.util.stream.Stream;
 import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
@@ -17,9 +12,6 @@ import syntax.analyzer.model.exceptions.SyntaxErrorException;
  * @author Antonio Neto e Uellington Damasceno
  */
 public class TokenUtil {
-
-    private static final List<Deque<Token>> COMPLETED_PRODUCTIONS = new LinkedList();
-    private static final List<Deque<Token>> CHECKPOINTS = new LinkedList();
 
     public static boolean testTypeBeforeConsume(Deque<Token> tokens, TokenType type, Terminals terminal) throws EOFNotExpectedException {
         EOFNotExpectedException.throwIfEmpty(tokens, terminal);
@@ -61,36 +53,19 @@ public class TokenUtil {
         tokens.pop();
     }
 
-    public static void complete(Deque<Token> tokens, int pos) {
-        Deque<Token> anotherDeque = CHECKPOINTS.get(pos);
-        COMPLETED_PRODUCTIONS.add(Stream
-                .generate(anotherDeque::pop)
-                .limit(anotherDeque.size() - tokens.size())
-                .collect(toCollection(ArrayDeque::new)));
-    }
-
-    public static Deque<Token> rollbackFor(int pos) {
-        return CHECKPOINTS.get(pos);
-    }
-
-    public static int createCheckpoint(Deque<Token> tokens) {
-        CHECKPOINTS.add(new ArrayDeque(tokens));
-        return CHECKPOINTS.size() - 1;
-    }
-    
-    public static void consumeExpectedTokenByLexame(Deque<Token> tokens, Terminals terminal) throws EOFNotExpectedException{
+    public static void consumeExpectedTokenByLexame(Deque<Token> tokens, Terminals terminal) throws EOFNotExpectedException {
         try {
             TokenUtil.consumerByLexame(tokens, terminal);
         } catch (SyntaxErrorException e) {
             ErrorManager.addNewInternalError(tokens, terminal);
         }
     }
-    
-    public static void consumeExpectedTokenByType(Deque<Token> tokens,TokenType tokenType, Terminals terminal) throws EOFNotExpectedException{
+
+    public static void consumeExpectedTokenByType(Deque<Token> tokens, TokenType tokenType, Terminals terminal) throws EOFNotExpectedException {
         try {
-            TokenUtil.consumerByType(tokens,tokenType, terminal);
+            TokenUtil.consumerByType(tokens, tokenType, terminal);
         } catch (SyntaxErrorException e) {
             ErrorManager.addNewInternalError(tokens, terminal);
         }
-    }
+    }            
 }

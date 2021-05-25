@@ -19,73 +19,80 @@ public class VarUsage {
         if (TokenUtil.testLexameBeforeConsume(tokens, EQUALS)) {
             VarDeclaration.variableDeclaratorConsumer(tokens);
         } else if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
-            TokenUtil.consumer(tokens);
-            TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-            if (!TokenUtil.testLexameBeforeConsume(tokens, SEMICOLON)) {
-                TokenUtil.consumerByLexame(tokens, EQUALS);
-                try {
-                    VarScope.typedVariableScoped(tokens);
-                    if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
-                        StructDeclaration.structUsageConsumer(tokens);
-                    }
-                } catch (SyntaxErrorException e1) {
-                    EOFNotExpectedException.throwIfEmpty(tokens, IDENTIFIER);
-                    Token token = tokens.pop();
-                    EOFNotExpectedException.throwIfEmpty(tokens, OPEN_PARENTHESES, DOT, OPEN_BRACKET);
-                    Token nextToken = tokens.peek();
-                    tokens.push(token);
-
-                    if (token.getType() == TokenType.IDENTIFIER
-                            && nextToken.thisLexameIs(OPEN_PARENTHESES.getVALUE())) {
-                        FunctionDeclaration.callFunctionConsumer(tokens);
-                    } else if (token.getType() == TokenType.IDENTIFIER
-                            && nextToken.thisLexameIs(DOT.getVALUE())) {
-                        TokenUtil.consumer(tokens);
-                        StructDeclaration.structUsageConsumer(tokens);
-                    } else if (token.getType() == TokenType.IDENTIFIER
-                            && nextToken.thisLexameIs(OPEN_BRACKET.getVALUE())) {
-                        TokenUtil.consumer(tokens);
-                        Arrays.dimensionConsumer(tokens);
-                    } else {
-                        Expressions.fullChecker(tokens);
-                    }
-                }
-            }
-
+            allProductionsWithDot(tokens);
         } else if (TokenUtil.testLexameBeforeConsume(tokens, OPEN_BRACKET)) {
-            Arrays.dimensionConsumer(tokens);
-            try {
-                TokenUtil.consumerByLexame(tokens, SEMICOLON);
-            } catch (SyntaxErrorException e) {
-                TokenUtil.consumeExpectedTokenByLexame(tokens, EQUALS);
-                try {
-                    VarScope.typedVariableScoped(tokens);
-                    if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
-                        StructDeclaration.structUsageConsumer(tokens);
-                    }
-                } catch (SyntaxErrorException e1) {
-                    EOFNotExpectedException.throwIfEmpty(tokens, IDENTIFIER);
-                    Token token = tokens.pop();
-                    EOFNotExpectedException.throwIfEmpty(tokens, DOT, OPEN_BRACKET);
-                    Token nextToken = tokens.peek();
-                    tokens.push(token);
-                    if (token.getType() == TokenType.IDENTIFIER
-                            && nextToken.thisLexameIs(DOT.getVALUE())) {
-                        TokenUtil.consumer(tokens);
-                        StructDeclaration.structUsageConsumer(tokens);
-                    } else if (token.getType() == TokenType.IDENTIFIER
-                            && nextToken.thisLexameIs(OPEN_BRACKET.getVALUE())) {
-                        TokenUtil.consumer(tokens);
-                        Arrays.dimensionConsumer(tokens);
-                    } else if (TypeDeclaration.primaryChecker(token)) {
-                        TypeDeclaration.primaryConsumer(tokens);
-                    } else if (TokenUtil.testLexameBeforeConsume(tokens, OPEN_KEY)) {
-                        Arrays.initialize(tokens);
-                    }
-                }
-            }
+            allProductionsWithBracket(tokens);
         } else {
             throw new SyntaxErrorException(tokens.peek().getLexame(), EQUALS, DOT, OPEN_BRACKET);
+        }
+    }
+
+    private static void allProductionsWithDot(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
+        TokenUtil.consumer(tokens);
+        TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
+        if (!TokenUtil.testLexameBeforeConsume(tokens, SEMICOLON)) {
+            TokenUtil.consumerByLexame(tokens, EQUALS);
+            try {
+                VarScope.typedVariableScoped(tokens);
+                if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
+                    StructDeclaration.structUsageConsumer(tokens);
+                }
+            } catch (SyntaxErrorException e1) {
+                EOFNotExpectedException.throwIfEmpty(tokens, IDENTIFIER);
+                Token token = tokens.pop();
+                EOFNotExpectedException.throwIfEmpty(tokens, OPEN_PARENTHESES, DOT, OPEN_BRACKET);
+                Token nextToken = tokens.peek();
+                tokens.push(token);
+
+                if (token.getType() == TokenType.IDENTIFIER
+                        && nextToken.thisLexameIs(OPEN_PARENTHESES.getVALUE())) {
+                    FunctionDeclaration.callFunctionConsumer(tokens);
+                } else if (token.getType() == TokenType.IDENTIFIER
+                        && nextToken.thisLexameIs(DOT.getVALUE())) {
+                    TokenUtil.consumer(tokens);
+                    StructDeclaration.structUsageConsumer(tokens);
+                } else if (token.getType() == TokenType.IDENTIFIER
+                        && nextToken.thisLexameIs(OPEN_BRACKET.getVALUE())) {
+                    TokenUtil.consumer(tokens);
+                    Arrays.dimensionConsumer(tokens);
+                } else {
+                    Expressions.fullChecker(tokens);
+                }
+            }
+        }
+    }
+
+    private static void allProductionsWithBracket(Deque<Token> tokens) throws EOFNotExpectedException, SyntaxErrorException {
+        Arrays.dimensionConsumer(tokens);
+        try {
+            TokenUtil.consumerByLexame(tokens, SEMICOLON);
+        } catch (SyntaxErrorException e) {
+            TokenUtil.consumeExpectedTokenByLexame(tokens, EQUALS);
+            try {
+                VarScope.typedVariableScoped(tokens);
+                if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
+                    StructDeclaration.structUsageConsumer(tokens);
+                }
+            } catch (SyntaxErrorException e1) {
+                EOFNotExpectedException.throwIfEmpty(tokens, IDENTIFIER);
+                Token token = tokens.pop();
+                EOFNotExpectedException.throwIfEmpty(tokens, DOT, OPEN_BRACKET);
+                Token nextToken = tokens.peek();
+                tokens.push(token);
+                if (token.getType() == TokenType.IDENTIFIER
+                        && nextToken.thisLexameIs(DOT.getVALUE())) {
+                    TokenUtil.consumer(tokens);
+                    StructDeclaration.structUsageConsumer(tokens);
+                } else if (token.getType() == TokenType.IDENTIFIER
+                        && nextToken.thisLexameIs(OPEN_BRACKET.getVALUE())) {
+                    TokenUtil.consumer(tokens);
+                    Arrays.dimensionConsumer(tokens);
+                } else if (TypeDeclaration.primaryChecker(token)) {
+                    TypeDeclaration.primaryConsumer(tokens);
+                } else if (TokenUtil.testLexameBeforeConsume(tokens, OPEN_KEY)) {
+                    Arrays.initialize(tokens);
+                }
+            }
         }
     }
 }
