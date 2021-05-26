@@ -53,8 +53,6 @@ public enum Terminals {
     EXCLAMATION("!"),
     CALL_FUNCTION("<Function>"),
     START("start"),
-    INCREMENT("++"),
-    DECREMENT("--"),
     GLOBAL("global"),
     LOCAL("local"),
     THEN("then");

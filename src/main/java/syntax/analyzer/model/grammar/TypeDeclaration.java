@@ -63,7 +63,8 @@ public class TypeDeclaration {
     public static boolean scalarChecker(Token token) {
         return token.thisLexameIs(REAL.getVALUE()) || token.thisLexameIs(INT.getVALUE());
     }
-
+    
+    
     public static void literalConsumer(Deque<Token> tokens) throws EOFNotExpectedException, SyntaxErrorException {
         EOFNotExpectedException.throwIfEmpty(tokens, TRUE, FALSE, REAL, INT, STRING);
         Token token = tokens.peek();

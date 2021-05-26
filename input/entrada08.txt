@@ -98,5 +98,6 @@ function int fact(int n){
         int second = fact(div(fact(n), 5));
     }
 
+    method();
     return first + second;
 }

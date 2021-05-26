@@ -20,8 +20,10 @@ public class Print {
         TokenUtil.consumer(tokens);
         TokenUtil.consumeExpectedTokenByLexame(tokens, OPEN_PARENTHESES);
         if (TokenUtil.testLexameBeforeConsume(tokens, CLOSE_PARENTHESES)) {
+            ErrorManager.addNewInternalError(tokens, STRING, IDENTIFIER);
+        } else if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
             ErrorManager.addNewInternalError(tokens, IDENTIFIER, STRING);
-            TokenUtil.consumer(tokens);
+            morePrints(tokens);
         } else {
             expressionPrintConsumer(tokens);
         }
@@ -30,30 +32,32 @@ public class Print {
 
     public static void expressionPrintConsumer(Deque<Token> tokens) throws EOFNotExpectedException {
         try {
-            TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
-            if (!TokenUtil.testLexameBeforeConsume(tokens, CLOSE_PARENTHESES)) {
-                if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
-                    StructDeclaration.structUsageConsumer(tokens);
-                } else if (TokenUtil.testLexameBeforeConsume(tokens, OPEN_BRACKET)) {
-                    Arrays.dimensionConsumer(tokens);
-                } else if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
-                    morePrints(tokens);
-                } else {
-                    throw new SyntaxErrorException(tokens.peek().getLexame(), DOT, OPEN_BRACKET, COMMA, CLOSE_PARENTHESES);
-                }
-            }
+            TypeDeclaration.literalConsumer(tokens);
         } catch (SyntaxErrorException e) {
-            try {
-                TokenUtil.consumerByType(tokens, TokenType.STRING, Terminals.STRING);
-            } catch (SyntaxErrorException e1) {
-                if (!tokens.peek().thisLexameIs(SEMICOLON.getVALUE())) {
-                    ErrorManager.addNewInternalError(tokens, STRING, IDENTIFIER, CLOSE_PARENTHESES);
-                    TokenUtil.consumer(tokens);
+            if (TokenUtil.testTypeBeforeConsume(tokens, TokenType.STRING, Terminals.STRING)) {
+                TokenUtil.consumer(tokens);
+            } else if (TokenUtil.testTypeBeforeConsume(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER)) {
+                TokenUtil.consumer(tokens);
+                if (!TokenUtil.testLexameBeforeConsume(tokens, COMMA)
+                        && !TokenUtil.testLexameBeforeConsume(tokens, CLOSE_PARENTHESES)
+                        && !TokenUtil.testLexameBeforeConsume(tokens, SEMICOLON)) {
+                    if (TokenUtil.testLexameBeforeConsume(tokens, DOT)) {
+                        StructDeclaration.structUsageConsumer(tokens);
+                    } else if (TokenUtil.testLexameBeforeConsume(tokens, OPEN_BRACKET)) {
+                        Arrays.dimensionConsumer(tokens);
+                    } else {
+                        ErrorManager.addNewInternalError(tokens, DOT, OPEN_BRACKET, COMMA, CLOSE_PARENTHESES);
+                        TokenUtil.consumer(tokens);
+                    }
                 }
             }
-            if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
-                morePrints(tokens);
-            }
+        }
+        if (TokenUtil.testLexameBeforeConsume(tokens, COMMA)) {
+            morePrints(tokens);
+        } else if (TokenUtil.testTypeBeforeConsume(tokens, TokenType.STRING, Terminals.STRING)
+                || TokenUtil.testTypeBeforeConsume(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER)) {
+            ErrorManager.addNewInternalError(tokens, COMMA, CLOSE_PARENTHESES);
+            expressionPrintConsumer(tokens);
         }
     }
 

@@ -69,6 +69,11 @@ public class ConstDeclaration {
     public static void constDeclarator(Deque<Token> tokens) throws SyntaxErrorException, EOFNotExpectedException {
         TokenUtil.consumerByType(tokens, TokenType.IDENTIFIER, Terminals.IDENTIFIER);
         TokenUtil.consumeExpectedTokenByLexame(tokens, EQUALS);
-        TypeDeclaration.literalConsumer(tokens);
+        try {
+            TypeDeclaration.literalConsumer(tokens);
+        } catch (SyntaxErrorException e) {
+            ErrorManager.addNewInternalError(tokens, TRUE, FALSE, INT, REAL, STRING);
+            TokenUtil.consumer(tokens);
+        }
     }
 }

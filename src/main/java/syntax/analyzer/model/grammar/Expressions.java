@@ -78,7 +78,7 @@ public class Expressions {
             } else if (token.thisLexameIs(MINUS.getVALUE())) {
                 TokenUtil.consumerByLexame(tokens, MINUS);
                 addExpression(tokens);
-            }
+            } 
         }
     }
 
