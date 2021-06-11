@@ -2,6 +2,12 @@
     Todas as produções
 */
 
+pessoa method int);
+boolean f(int;
+fodase(int)
+
+
+
 procedure myPrint(string message){
     print(message);
 }

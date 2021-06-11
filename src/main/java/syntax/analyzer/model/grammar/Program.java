@@ -1,6 +1,7 @@
 package syntax.analyzer.model.grammar;
 
 import java.util.Deque;
+import lexical.analyzer.enums.TokenType;
 import lexical.analyzer.model.Token;
 import syntax.analyzer.model.exceptions.EOFNotExpectedException;
 import syntax.analyzer.model.exceptions.SyntaxErrorException;
@@ -57,6 +58,9 @@ public class Program {
                 }
             } else if (token.thisLexameIs(OPEN_KEY.getVALUE())) {
                 ErrorManager.genericBlockConsumer(tokens);
+            } else if (token.getType() == TokenType.IDENTIFIER || 
+                    TypeDeclaration.typeChecker(token)) {
+                FunctionSignature.fullChecker(tokens);
             } else {
                 ErrorManager.consumer(tokens);
             }
