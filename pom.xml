@@ -12,12 +12,8 @@
     </properties>
     <repositories>
         <repository>
-            <id>lexical-analyzer-mvn-repo</id>
-            <url>https://raw.github.com/UellingtonDamasceno/lexical-analyzer/mvn-repo/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
     <build>
@@ -49,10 +45,9 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>br.ecomp.uefs</groupId>
+            <groupId>com.github.UellingtonDamasceno</groupId>
             <artifactId>lexical-analyzer</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <type>jar</type>
-        </dependency>
+            <version>main-SNAPSHOT</version>
+        </dependency> 
     </dependencies>
 </project>

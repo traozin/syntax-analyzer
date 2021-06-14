@@ -58,9 +58,9 @@ public class Program {
                 }
             } else if (token.thisLexameIs(OPEN_KEY.getVALUE())) {
                 ErrorManager.genericBlockConsumer(tokens);
-            } else if (token.getType() == TokenType.IDENTIFIER || 
-                    TypeDeclaration.typeChecker(token)) {
-                FunctionSignature.fullChecker(tokens);
+            } else if (token.getType() == TokenType.IDENTIFIER
+                    || TypeDeclaration.typeChecker(token)) {
+                Signature.fullChecker(tokens);
             } else {
                 ErrorManager.consumer(tokens);
             }

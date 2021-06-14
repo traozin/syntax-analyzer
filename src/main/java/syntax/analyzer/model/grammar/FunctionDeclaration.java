@@ -28,7 +28,7 @@ public class FunctionDeclaration {
         try {
             TokenUtil.consumerByLexame(tokens, CLOSE_PARENTHESES);
         } catch (SyntaxErrorException e) {
-            FunctionSignature.paramsChecker(tokens);
+            Signature.paramsChecker(tokens);
             TokenUtil.consumeExpectedTokenByLexame(tokens, CLOSE_PARENTHESES);
         }
         blockFunctionChecker(tokens);

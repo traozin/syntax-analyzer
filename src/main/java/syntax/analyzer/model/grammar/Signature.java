@@ -14,7 +14,7 @@ import syntax.analyzer.util.TokenUtil;
  *
  * @author Antonio Neto e Uellington Damasceno
  */
-public class FunctionSignature {
+public class Signature {
 
     public static void fullChecker(Deque<Token> tokens) throws EOFNotExpectedException, SyntaxErrorException {
         TokenUtil.consumer(tokens);
